@@ -1,3 +1,5 @@
+import 'package:Outfitter/pages/outfits_screen.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
@@ -7,8 +9,12 @@ import 'package:flutter/services.dart';
 import 'pages/home_screen.dart';
 import 'pages/loading_screen.dart';
 
-void main() {
+List<CameraDescription> cameras;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+
   runApp(App());
 }
 
@@ -26,16 +32,21 @@ class App extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return new MaterialApp(
-              title: 'Outfitter',
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                brightness: Brightness.light,
-              ),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-              ),
-              themeMode: ThemeMode.dark,
-              home: HomeScreen());
+            title: 'Outfitter',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              primaryColor: Colors.deepPurple,
+              accentColor: Colors.pinkAccent,
+            ),
+            themeMode: ThemeMode.dark,
+            home: HomeScreen(
+              cameras: cameras,
+            ),
+          );
         }
         return LoadingScreen();
       },

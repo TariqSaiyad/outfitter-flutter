@@ -4,16 +4,18 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme
-          .of(context)
-          .primaryColor,
+      color: Theme.of(context).primaryColor,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
-            const SizedBox(height: 30,),
-            Text("LOADING...",style: TextStyle(letterSpacing: 2),)
+            const SizedBox(
+              height: 30,
+            ),
+            const Text("LOADING...",
+                style: TextStyle(letterSpacing: 2),
+                textDirection: TextDirection.ltr,)
           ],
         ),
       ),

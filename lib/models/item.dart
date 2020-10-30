@@ -1,4 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
 
+part 'item.g.dart';
+
+@JsonSerializable(nullable: false)
 class Item {
   String image;
   String name;
@@ -10,16 +14,9 @@ class Item {
   Item(this.image, this.name, this.type, this.dressCode, this.color,
       this.category);
 
-  Map<String, dynamic> toJSON() {
-    Map<String, dynamic> m = new Map();
-    m['name'] = name;
-    m['image'] = image;
-    m['type'] = type;
-    m['dressCode'] = dressCode;
-    m['color'] = color;
-    m['category'] = category;
-    return m;
-  }
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemToJson(this);
 
   @override
   bool operator ==(Object other) =>
