@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/constants.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
@@ -7,16 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'add_item_screen.dart';
-
-const List types = [
-  {"name": "shirts & tops", "image": "shirts.jpg"},
-  {"name": "hoodies", "image": "hoodies.jpg"},
-  {"name": "pants", "image": "pants.jpg"},
-  {"name": "shorts", "image": "shorts.jpg"},
-  {"name": "jackets", "image": "shirts2.jpg"},
-  {"name": "shoes", "image": "shoes.jpg"},
-  {"name": "accessories", "image": "acc.jpg"},
-];
 
 class HomeScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -34,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller = PageController(initialPage: currentPage);
     controller.addListener(() {
@@ -42,8 +32,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         currentPage = controller.page.floor();
       });
     });
-    person = Person.fromStorage();
-    print(person.toString());
+    Person.storage.ready.then((value) {
+      person = Person.fromStorage();
+      person.toString();
+    });
   }
 
   @override
@@ -87,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: <Widget>[
             AddItemScreen(
               cameras: widget.cameras,
+              person: person,
             ),
             ItemsScreen(),
             OutfitScreen(),
@@ -104,10 +97,10 @@ class ItemsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView.builder(
-        itemCount: types.length,
+        itemCount: TYPES.length,
         itemBuilder: (BuildContext context, int index) {
           return ItemTile(
-            type: types[index],
+            type: TYPES[index],
           );
         },
       ),

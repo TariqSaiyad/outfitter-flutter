@@ -8,8 +8,7 @@ part 'person.g.dart';
 
 @JsonSerializable(nullable: false)
 class Person {
-  static final LocalStorage storage = new LocalStorage('person');
-
+  static final LocalStorage storage = new LocalStorage('personData.json');
   final List<Item> items;
   final List<Outfit> outfits;
 
@@ -18,24 +17,33 @@ class Person {
   factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
 
   /// Creates the person object from local storage.
-  factory Person.fromStorage() => storage.getItem('person') == null
-      ? Person(items: new List(), outfits: new List())
-      : Person.fromJson(storage.getItem('person'));
+  factory Person.fromStorage() {
+    return storage.getItem('person') == null
+        ? Person(items: new List(), outfits: new List())
+        : Person.fromJson(storage.getItem('person'));
+  }
 
   Map<String, dynamic> toJson() => _$PersonToJson(this);
 
   // Add item to the Person object and re-serialize and update storage.
-  void addItem(
-    String image,
-    String name,
-    String type,
-    String dressCode,
-    String color,
-    String category,
-  ) {
-    items.add(new Item(image, name, type, dressCode, color, category));
+  void addItem(Item i) {
+    items.add(i);
     storage.setItem('person', this.toJson());
+    print("item ${i.name} added!");
+    print(this.toJson());
   }
+
+  //  void addItem(
+//    String image,
+//    String name,
+//    String type,
+//    String dressCode,
+//    String color,
+//    String category,
+//  ) {
+//    items.add(new Item(image, name, type, dressCode, color, category));
+//    storage.setItem('person', this.toJson());
+//  }
 
   /// Remove an item from Person object, re-serialise.
   /// Returns true if the item is removed successfully.

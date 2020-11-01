@@ -28,6 +28,8 @@ dependencies:
   json_annotation: ^3.0.0
   convex_bottom_bar: ^2.6.0
   camera: ^0.5.8+11
+  draggable_bottom_sheet: ^0.1.1
+
 
 
 

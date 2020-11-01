@@ -1,3 +1,5 @@
+import 'package:Outfitter/constants/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'item.g.dart';
@@ -17,6 +19,9 @@ class Item {
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
+
+  /// Get the material Color object from the string representation of the item color.
+  Color get materialColor => COLORS_LIST[color];
 
   @override
   bool operator ==(Object other) =>
