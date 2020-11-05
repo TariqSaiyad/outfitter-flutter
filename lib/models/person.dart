@@ -11,6 +11,7 @@ class Person {
   static final LocalStorage storage = new LocalStorage('personData.json');
   final List<Item> items;
   final List<Outfit> outfits;
+  Map<String, int> itemCounts = new Map();
 
   Person({this.items, this.outfits});
 
@@ -18,9 +19,26 @@ class Person {
 
   /// Creates the person object from local storage.
   factory Person.fromStorage() {
-    return storage.getItem('person') == null
+    // get data from local storage.
+    dynamic data = storage.getItem('person');
+    // create the person object.
+    Person p = data == null
         ? Person(items: new List(), outfits: new List())
-        : Person.fromJson(storage.getItem('person'));
+        : Person.fromJson(data);
+
+    //update the map for the item counts.
+    p.updateItemCounts(p);
+    return p;
+  }
+
+  void updateItemCounts(Person p) {
+    p.itemCounts = new Map();
+    p.items.forEach((element) {
+      String cat = element.category.toLowerCase();
+      p.itemCounts[cat] = p.itemCounts[cat] != null ? p.itemCounts[cat] + 1 : 1;
+    });
+
+    print(p.itemCounts);
   }
 
   Map<String, dynamic> toJson() => _$PersonToJson(this);
@@ -29,7 +47,8 @@ class Person {
   void addItem(Item i) {
     items.add(i);
     storage.setItem('person', this.toJson());
-    print("item ${i.name} added!");
+    updateItemCounts(this);
+    print("item ${i.name} ADDED!");
     print(this.toJson());
   }
 
@@ -51,6 +70,9 @@ class Person {
     if (!items.contains(i)) return false;
     items.remove(i);
     storage.setItem('person', this.toJson());
+    updateItemCounts(this);
+    print("REMOVED");
+    print(this.toJson());
     return true;
   }
 
@@ -68,6 +90,11 @@ class Person {
     outfits.remove(o);
     storage.setItem('person', this.toJson());
     return true;
+  }
+
+  /// Get the number of items stored in a particular category.
+  int getCategoryCount(String category) {
+    return itemCounts[category] ?? 0;
   }
 
   String toString() {

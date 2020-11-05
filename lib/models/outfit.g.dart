@@ -22,8 +22,8 @@ Outfit _$OutfitFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$OutfitToJson(Outfit instance) => <String, dynamic>{
       'name': instance.name,
-      'accessories': instance.accessories,
-      'layers': instance.layers,
+      'accessories': instance.accessories.map((e) => e.toJson()).toList(),
+      'layers': instance.layers.map((e) => e.toJson()).toList(),
       'pants': instance.pants,
       'shoes': instance.shoes,
     };

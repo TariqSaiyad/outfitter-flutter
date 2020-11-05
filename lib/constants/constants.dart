@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const List TYPES = [
-  {"name": "shirts & tops", "image": "shirts.jpg"},
+  {"name": "shirts", "image": "shirts.jpg"},
   {"name": "hoodies", "image": "hoodies.jpg"},
   {"name": "pants", "image": "pants.jpg"},
   {"name": "shorts", "image": "shorts.jpg"},

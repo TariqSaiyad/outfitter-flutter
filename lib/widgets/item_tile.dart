@@ -1,15 +1,21 @@
+import 'package:Outfitter/helpers/helper_methods.dart';
+import 'package:Outfitter/models/person.dart';
+
 import '../pages/category_screen.dart';
 import 'package:flutter/material.dart';
 import '../pages/home_screen.dart';
 
 class ItemTile extends StatelessWidget {
   final dynamic type;
+  final Person person;
   final bool isDisplay;
 
-  const ItemTile({Key key, this.type, this.isDisplay = false})
+  const ItemTile(
+      {Key key, this.type, this.person, this.isDisplay = false})
       : super(key: key);
 
-  const ItemTile.display({Key key, this.type, this.isDisplay = true})
+  const ItemTile.display(
+      {Key key, this.type, this.person, this.isDisplay = true})
       : super(key: key);
 
   @override
@@ -33,19 +39,38 @@ class ItemTile extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CategoryScreen(type: type)),
+                            builder: (context) => CategoryScreen(
+                                  type: type,
+                                  person: person,
+                                )),
                       );
                     }
                   },
-                  child: Center(
-                      child: Text(
-                    type['name'].toString().toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        letterSpacing: 4,
-                        fontWeight: FontWeight.w400,
-                        fontSize: isDisplay ? 20 : 24),
-                  )),
+                  child: Row(
+                    children: [
+                      isDisplay ? BackButton() : SizedBox(width: 12),
+                      Text(
+                        type['name'].toString().toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 4,
+                            fontWeight: FontWeight.w400,
+                            fontSize: isDisplay ? 20 : 24),
+                      ),
+                      Spacer(),
+                      CircleAvatar(
+                        backgroundColor:
+                            Theme.of(context).accentColor.withOpacity(0.6),
+                        radius: 16,
+                        child: Text(person.getCategoryCount(type['name']).toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: isDisplay ? 18 : 20)),
+                      ),
+                      SizedBox(width: 12)
+                    ],
+                  ),
                 ),
               ),
             ),

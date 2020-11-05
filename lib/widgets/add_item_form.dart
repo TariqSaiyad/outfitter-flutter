@@ -62,7 +62,6 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
       Item i = new Item(widget.image, name, type, code, color, category);
       widget.onFormComplete(i);
       _formKey.currentState.reset();
-      print(i.toJson());
     }
   }
 

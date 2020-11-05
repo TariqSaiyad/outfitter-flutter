@@ -18,6 +18,6 @@ Person _$PersonFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$PersonToJson(Person instance) => <String, dynamic>{
-      'items': instance.items,
-      'outfits': instance.outfits,
+      'items': instance.items.map((e) => e.toJson()).toList(),
+      'outfits': instance.outfits.map((e) => e.toJson()).toList(),
     };

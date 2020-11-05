@@ -32,9 +32,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         currentPage = controller.page.floor();
       });
     });
-    Person.storage.ready.then((value) {
-      person = Person.fromStorage();
-      person.toString();
+  }
+
+  Future<bool> initData() {
+    return Person.storage.ready.then((value) {
+      print("HERE");
+      if (person == null) {
+        person = Person.fromStorage();
+      }
+//      print(person.toJson());
+//      person.items.map((e) => print(e.name));
+      return true;
     });
   }
 
@@ -73,33 +81,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeInOut);
             }),
-        body: PageView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: controller,
-          children: <Widget>[
-            AddItemScreen(
-              cameras: widget.cameras,
-              person: person,
-            ),
-            ItemsScreen(),
-            OutfitScreen(),
-          ],
+        body: FutureBuilder(
+          future: initData(),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.hasData) {
+              return PageView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: controller,
+                children: <Widget>[
+                  AddItemScreen(
+                    cameras: widget.cameras,
+                    person: person,
+                  ),
+                  _itemsScreen(),
+                  OutfitScreen(),
+                ],
+              );
+            }
+            return CircularProgressIndicator();
+          },
         ));
   }
-}
 
-class ItemsScreen extends StatelessWidget {
-  const ItemsScreen({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _itemsScreen() {
     return SafeArea(
       child: ListView.builder(
         itemCount: TYPES.length,
         itemBuilder: (BuildContext context, int index) {
           return ItemTile(
+            person: person,
             type: TYPES[index],
           );
         },
