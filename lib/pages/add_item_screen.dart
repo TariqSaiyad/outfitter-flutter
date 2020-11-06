@@ -112,20 +112,17 @@ class _AddItemScreenState extends State<AddItemScreen>
 
   Widget _expandedForm(List<IconData> icons) {
     return Container(
-      decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Column(
-        children: <Widget>[
+        decoration: BoxDecoration(
+            color: Theme.of(context).canvasColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        child: Column(children: <Widget>[
           const Icon(
             Icons.keyboard_arrow_down,
             size: 30,
             color: Colors.white,
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           const Text(
             'Enter Item Details',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -136,45 +133,12 @@ class _AddItemScreenState extends State<AddItemScreen>
             indent: 16,
             endIndent: 16,
           ),
-//          const SizedBox(
-//            height: 16,
-//          ),
-//          FloatingActionButton(
-//              child: Icon(Icons.delete_outline),
-//              onPressed: () {
-//                Helper.deleteFile(imagePath).then((value) => {
-//                      if (value) {onDeleteImage()}
-//                    });
-//              }),
           Expanded(
-            child: AddItemFormWidget(
-              image: imagePath,
-              onFormComplete: onFormComplete,
-            ),
-          )
-//          Expanded(
-//            child: GridView.builder(
-//                itemCount: icons.length,
-//                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                  crossAxisCount: 1,
-//                  crossAxisSpacing: 10,
-//                  mainAxisSpacing: 10,
-//                ),
-//                itemBuilder: (context, index) => AnimatedContainer(
-//                      decoration: BoxDecoration(
-//                          color: Colors.white,
-//                          borderRadius: BorderRadius.circular(20)),
-//                      duration: const Duration(milliseconds: 300),
-//                      child: Icon(
-//                        icons[index],
-//                        color: Colors.pink,
-//                        size: 40,
-//                      ),
-//                    )),
-//          )
-        ],
-      ),
-    );
+              child: AddItemFormWidget(
+            image: imagePath,
+            onFormComplete: onFormComplete,
+          ))
+        ]));
   }
 
   /// Display the thumbnail of the captured image or video.

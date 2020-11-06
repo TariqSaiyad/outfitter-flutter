@@ -52,10 +52,15 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                       color: item.materialColor),
             ],
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(bottom: 0),
               centerTitle: true,
               title: GestureDetector(
                 onTap: _scrollToTop,
-                child: SliverItemTitle(offset: offset, item: item),
+                child: SliverItemTitle(
+                  offset: offset,
+                  title: item.name,
+                  dividerColor: item.materialColor,
+                ),
               ),
               background: GridItemWidget(item: item, isGrid: false),
             ),
@@ -120,14 +125,20 @@ class ItemDetail extends StatelessWidget {
 }
 
 class SliverItemTitle extends StatelessWidget {
-  const SliverItemTitle({
-    Key key,
-    @required this.offset,
-    @required this.item,
-  }) : super(key: key);
+  const SliverItemTitle(
+      {Key key,
+      @required this.offset,
+      @required this.title,
+      @required this.dividerColor,
+      this.trailing,
+      this.leading})
+      : super(key: key);
 
   final double offset;
-  final Item item;
+  final Color dividerColor;
+  final String title;
+  final Widget trailing;
+  final Widget leading;
 
   @override
   Widget build(BuildContext context) {
@@ -142,14 +153,25 @@ class SliverItemTitle extends StatelessWidget {
             size: 32 * (1 - offset),
           ),
         ),
-        Text(
-          item.name,
-          style:
-              Theme.of(context).textTheme.headline6.copyWith(letterSpacing: 1),
+        Row(
+          children: [
+            Spacer(),
+            Text(
+              title,
+              style: TextStyle(fontSize: 18, letterSpacing: 1),
+            ),
+            Spacer(),
+            trailing != null
+                ? Padding(
+                    padding: EdgeInsets.only(right: 16 * (1 - offset) + 8),
+                    child: trailing,
+                  )
+                : SizedBox()
+          ],
         ),
         Divider(
           height: 8,
-          color: item.materialColor,
+          color: dividerColor,
           thickness: 2,
           endIndent: 24 * (1 - offset),
           indent: 24 * (1 - offset),

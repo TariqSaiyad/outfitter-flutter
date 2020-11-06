@@ -22,67 +22,147 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   List<Item> items = new List();
   String query = "";
-  String category = NONE_CONST;
-  String color = NONE_CONST;
-  String type = NONE_CONST;
-  String code = NONE_CONST;
+  String category = "";
+  String color = "";
+  String type = "";
+  String code = "";
 
   List<String> categoryList = new List();
   List<String> typeList = new List();
   List<String> codeList = new List();
   Map<String, Color> colorList = new Map();
 
+  ScrollController _scrollController;
+  double offset = 0.0;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = new ScrollController()
+      ..addListener(() {
+        setState(() {
+          offset = _scrollController.offset /
+              _scrollController.position.maxScrollExtent;
+        });
+      });
     items = widget.person.items;
 
-    categoryList.addAll([...CATEGORY_LIST, NONE_CONST]);
-    typeList.addAll([...CLOTHING_TYPES, NONE_CONST]);
-    codeList.addAll([...DRESS_CODES, NONE_CONST]);
+    categoryList.addAll([NONE_CONST, ...CATEGORY_LIST]);
+    typeList.addAll([NONE_CONST, ...CLOTHING_TYPES]);
+    codeList.addAll([NONE_CONST, ...DRESS_CODES]);
 
     colorList.addEntries([
-      ...COLORS_LIST.entries,
-      {NONE_CONST: Colors.black}.entries.first
+      {NONE_CONST: Colors.black}.entries.first,
+      ...COLORS_LIST.entries
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      children: [
-        const SizedBox(height: 8),
-        BackButton(),
-        Expanded(child: _itemResults()),
-        Expanded(child: _searchInputs(context)),
-      ],
-    ));
+        backgroundColor: Theme.of(context).primaryColor,
+        body: Center(
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverAppBar(
+                leading: const SizedBox(),
+                expandedHeight: MediaQuery.of(context).size.height * 0.9,
+                backgroundColor: Theme.of(context).canvasColor,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.all(0),
+                  centerTitle: true,
+                  title: _buildtitle(),
+                  background: _itemResults(),
+                ),
+              ),
+              SliverFixedExtentList(itemExtent: 65, delegate: _buildInputs())
+            ],
+          ),
+        ));
+
+//      body: Column(
+//        children: [
+//          const SizedBox(height: 8),
+//          SearchHeader(items: items),
+//          Expanded(child: _itemResults()),
+//          Expanded(child: _searchInputs(context)),
+//        ],
+//      ),
+    //);
+  }
+
+  SliverChildListDelegate _buildInputs() {
+    return SliverChildListDelegate([
+      _nameInput(),
+      InputSwiper(
+        title: "Category",
+        onUpdate: updateCategory,
+        itemList: categoryList,
+      ),
+      InputSwiper(
+        title: "Color",
+        onUpdate: updateColor,
+        itemMap: colorList,
+      ),
+      InputSwiper(
+        title: "Dress Code",
+        onUpdate: updateCode,
+        itemList: codeList,
+      ),
+      InputSwiper(
+        title: "Type",
+        onUpdate: updateType,
+        itemList: typeList,
+      ),
+    ]);
+  }
+
+  GestureDetector _buildtitle() {
+    return GestureDetector(
+      onTap: _scrollToTop,
+      child: AnimatedOpacity(
+        opacity: 1 - offset,
+        duration: const Duration(milliseconds: 200),
+        child: Icon(
+          Icons.keyboard_arrow_up,
+          size: 32 * (1 - offset),
+        ),
+      ),
+    );
   }
 
   Widget _itemResults() {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.symmetric(horizontal: 8),
         child: items.length > 0
-            ? GridView.builder(
-                itemCount: items.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemBuilder: (context, index) {
-                  Item i = items[index];
-                  return AnimationConfiguration.staggeredGrid(
-                      columnCount: 2,
-                      position: index,
-                      child: FadeInAnimation(
-                        delay: Duration(milliseconds: 20 + (20 * index)),
-                        duration: const Duration(milliseconds: 200),
-                        child: GridItemWidget(item: i, isGrid: true),
-                      ));
-                })
+            ? Column(
+                children: [
+                  SearchHeader(items: items),
+                  Expanded(
+                    child: GridView.builder(
+                        itemCount: items.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemBuilder: (context, index) {
+                          Item i = items[index];
+                          return AnimationConfiguration.staggeredGrid(
+                              columnCount: 2,
+                              position: index,
+                              child: FadeInAnimation(
+                                delay:
+                                    Duration(milliseconds: 20 + (20 * index)),
+                                duration: const Duration(milliseconds: 200),
+                                child: GridItemWidget(item: i, isGrid: true),
+                              ));
+                        }),
+                  ),
+                ],
+              )
             : Center(
                 child: Text(
                   "NO ITEMS",
@@ -95,120 +175,110 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _searchInputs(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).primaryColor),
-      child: ListView(
-        itemExtent: 65,
-        children: [
-          _nameInput(),
-          InputSwiper(
-            title: "Category",
-            onUpdate: updateCategory,
-            itemList: categoryList,
-          ),
-          InputSwiper(
-            title: "Color",
-            onUpdate: updateColor,
-            itemMap: colorList,
-          ),
-          InputSwiper(
-            title: "Dress Code",
-            onUpdate: updateCode,
-            itemList: codeList,
-          ),
-          InputSwiper(
-            title: "Type",
-            onUpdate: updateType,
-            itemList: typeList,
-          ),
-        ],
-      ),
-    );
-  }
+//  Widget _searchInputs(BuildContext context) {
+//    return Container(
+//      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//      decoration: BoxDecoration(
+//          borderRadius: BorderRadius.circular(12),
+//          color: Theme.of(context).primaryColor),
+//      child: ListView(
+//        itemExtent: 65,
+//        children: [
+//          _nameInput(),
+//          InputSwiper(
+//            title: "Category",
+//            onUpdate: updateCategory,
+//            itemList: categoryList,
+//          ),
+//          InputSwiper(
+//            title: "Color",
+//            onUpdate: updateColor,
+//            itemMap: colorList,
+//          ),
+//          InputSwiper(
+//            title: "Dress Code",
+//            onUpdate: updateCode,
+//            itemList: codeList,
+//          ),
+//          InputSwiper(
+//            title: "Type",
+//            onUpdate: updateType,
+//            itemList: typeList,
+//          ),
+//        ],
+//      ),
+//    );
+//  }
 
   Widget _nameInput() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(child: BackButton()),
-          SizedBox(
-            width: 4,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: TextFormField(
+        maxLines: 1,
+        keyboardType: TextInputType.text,
+        cursorColor: Theme.of(context).accentColor,
+        decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          suffixText: "Item Name",
+          errorStyle: TextStyle(
+            color: Colors.red[100],
           ),
-          Expanded(
-              flex: 5,
-              child: TextFormField(
-                maxLines: 1,
-                keyboardType: TextInputType.text,
-                cursorColor: Theme.of(context).accentColor,
-                decoration: InputDecoration(
-//                border: OutlineInputBorder(
-//                  borderRadius: BorderRadius.circular(8),
-//                ),
-                  errorStyle: TextStyle(
-                    color: Colors.red[100],
-                  ),
-                  labelText: "Item Name",
-                  labelStyle: TextStyle(
-                      color: Theme.of(context).textTheme.caption.color),
-                ),
-                onChanged: (val) {
-                  setState(() {
-                    query = val;
-                    filterResults();
-                  });
-                },
-              ))
-        ],
+          labelText: "Item Name",
+          prefixIcon: Icon(Icons.search),
+          labelStyle:
+              TextStyle(color: Theme.of(context).textTheme.caption.color),
+        ),
+        onChanged: (val) {
+          setState(() {
+            query = val;
+            filterResults();
+          });
+        },
       ),
     );
   }
 
+  void _scrollToTop() {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
+  }
+
+//  void _scrollToBottom() {
+//    _scrollController.animateTo(_scrollController.position.minScrollExtent,
+//        duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
+//  }
+
   void updateType(int val) {
     setState(() {
-      type = typeList[val];
-      if (type == NONE_CONST) {
-        type = "";
-      }
+      type = typeList[val] == NONE_CONST ? "" : typeList[val];
       filterResults();
     });
   }
 
   void updateCode(int val) {
     setState(() {
-      code = codeList[val];
-      if (code == NONE_CONST) {
-        code = "";
-      }
+      code = codeList[val] == NONE_CONST ? "" : codeList[val];
       filterResults();
     });
   }
 
   void updateCategory(int val) {
     setState(() {
-      category = categoryList[val];
-      if (category == NONE_CONST) {
-        category = "";
-      }
+      category = categoryList[val] == NONE_CONST ? "" : categoryList[val];
       filterResults();
     });
   }
 
   void updateColor(int val) {
     setState(() {
-      color = colorList.keys.toList()[val];
-      if (color == NONE_CONST) {
-        color = "";
-      }
+      String temp = colorList.keys.toList()[val];
+      color = temp == NONE_CONST ? "" : temp;
       filterResults();
     });
   }
 
   void filterResults() {
+    print("$category - $color - $type - $code");
     //check that there are items to perform search on.
     //this avoid any errors accessing a list that is undefined.
 
@@ -232,6 +302,45 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
+class SearchHeader extends StatelessWidget {
+  const SearchHeader({
+    Key key,
+    @required this.items,
+  }) : super(key: key);
+
+  final List<Item> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          BackButton(),
+          Text(
+            "ITEM SEARCH",
+            style: TextStyle(
+                color: Colors.white,
+                letterSpacing: 2,
+                fontWeight: FontWeight.w400,
+                fontSize: 20),
+          ),
+          const Spacer(),
+          CircleAvatar(
+            backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
+            radius: 16,
+            child: Text(items.length.toString(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 18)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class InputSwiper extends StatefulWidget {
   final Function onUpdate;
   final Map<String, dynamic> itemMap;
@@ -248,6 +357,16 @@ class InputSwiper extends StatefulWidget {
 
 class _InputSwiperState extends State<InputSwiper> {
   final SwiperController _controller = new SwiperController();
+  int initIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // get index of last item.
+    initIndex = widget.itemList != null
+        ? widget.itemList.length - 1
+        : widget.itemMap.length - 1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -330,12 +449,8 @@ class _InputSwiperState extends State<InputSwiper> {
   }
 
   void resetIndex() {
-    // get index of last item.
-    int index = widget.itemList != null
-        ? widget.itemList.length - 1
-        : widget.itemMap.length - 1;
     // reset position when clicked.
-    _controller.move(index);
-    widget.onUpdate(index);
+    _controller.move(0);
+    widget.onUpdate(0);
   }
 }

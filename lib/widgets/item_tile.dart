@@ -8,8 +8,7 @@ class ItemTile extends StatelessWidget {
   final Person person;
   final bool isDisplay;
 
-  const ItemTile(
-      {Key key, this.type, this.person, this.isDisplay = false})
+  const ItemTile({Key key, this.type, this.person, this.isDisplay = false})
       : super(key: key);
 
   const ItemTile.display(
@@ -23,7 +22,6 @@ class ItemTile extends StatelessWidget {
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           height: isDisplay ? 60 : 90,
-//          duration: const Duration(seconds: 1),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Material(
@@ -60,7 +58,8 @@ class ItemTile extends StatelessWidget {
                         backgroundColor:
                             Theme.of(context).accentColor.withOpacity(0.6),
                         radius: 16,
-                        child: Text(person.getCategoryCount(type['name']).toString(),
+                        child: Text(
+                            person.getCategoryCount(type['name']).toString(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,

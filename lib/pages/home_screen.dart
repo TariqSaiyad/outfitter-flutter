@@ -76,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             items: [
               TabItem(title: "New", icon: Icons.add),
               TabItem(title: "Items", icon: Icons.style_outlined),
-//              TabItem(title: "Add", icon: Icons.add),
               TabItem(title: "Outfits", icon: Icons.checkroom_rounded),
             ],
             onTap: (int i) {
@@ -113,15 +112,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _itemsScreen() {
     return SafeArea(
-      child: ListView.builder(
-        itemCount: TYPES.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ItemTile(
-            person: person,
-            type: TYPES[index],
-          );
-        },
-      ),
-    );
+        child: Column(children: [
+      const SizedBox(height: 4),
+      for (var i in TYPES)
+        Expanded(
+            child: ItemTile(
+          person: person,
+          type: i,
+        )),
+      const SizedBox(height: 4),
+    ]));
   }
 }
