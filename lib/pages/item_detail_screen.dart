@@ -44,10 +44,12 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             leading: BackButton(color: item.materialColor),
             backgroundColor: Theme.of(context).canvasColor,
             actions: [
-              IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => _removeItem(),
-                  color: item.materialColor),
+              widget.removeItemFn == null
+                  ? const SizedBox()
+                  : IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => _removeItem(),
+                      color: item.materialColor),
             ],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,

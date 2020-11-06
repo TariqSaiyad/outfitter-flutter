@@ -1,6 +1,7 @@
 import 'package:Outfitter/constants/constants.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
+import 'package:Outfitter/pages/search_screen.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:camera/camera.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -59,7 +60,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
-            IconButton(icon: Icon(Icons.search), onPressed: () {}),
+            IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () => _goToSearch(context)),
             IconButton(icon: Icon(Icons.settings), onPressed: () {})
           ],
         ),
@@ -101,6 +104,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return CircularProgressIndicator();
           },
         ));
+  }
+
+  void _goToSearch(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SearchScreen(person: person)));
   }
 
   Widget _itemsScreen() {

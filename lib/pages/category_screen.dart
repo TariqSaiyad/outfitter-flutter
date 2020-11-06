@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/person.dart';
-import 'package:Outfitter/pages/item_detail_screen.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,9 +1,7 @@
-import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/person.dart';
 
 import '../pages/category_screen.dart';
 import 'package:flutter/material.dart';
-import '../pages/home_screen.dart';
 
 class ItemTile extends StatelessWidget {
   final dynamic type;

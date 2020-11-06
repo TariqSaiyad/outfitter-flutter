@@ -1,4 +1,3 @@
-import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
