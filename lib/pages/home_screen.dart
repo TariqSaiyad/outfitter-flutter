@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'add_item_screen.dart';
+import 'add_outfit_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -37,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<bool> initData() {
     return Person.storage.ready.then((value) {
-      print("HERE");
       if (person == null) {
         person = Person.fromStorage();
+        print("HERE");
       }
 //      print(person.toJson());
 //      person.items.map((e) => print(e.name));
@@ -51,6 +52,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButton: currentPage == 2
+            ? FloatingActionButton.extended(
+                heroTag: null,
+                autofocus: true,
+                highlightElevation: 0,
+                splashColor: Theme.of(context).primaryColor,
+                onPressed: () => _goToAddOutfit(context),
+                label: Text("Add Outfit"),
+              )
+            : null,
 //      resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -63,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () => _goToSearch(context)),
-            IconButton(icon: Icon(Icons.settings), onPressed: () {})
+//TODO: Settings. Themes (light,dark, primary, accent), Add new categories...
+//            IconButton(icon: Icon(Icons.settings), onPressed: () {})
           ],
         ),
         bottomNavigationBar: ConvexAppBar(
@@ -96,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     person: person,
                   ),
                   _itemsScreen(),
-                  OutfitScreen(),
+                  OutfitScreen(person: person),
                 ],
               );
             }
@@ -108,6 +121,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _goToSearch(BuildContext context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => SearchScreen(person: person)));
+  }
+
+  void _goToAddOutfit(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddOutfitScreen(person: person)));
   }
 
   Widget _itemsScreen() {

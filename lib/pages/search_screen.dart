@@ -135,43 +135,48 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _itemResults() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        child: items.length > 0
-            ? Column(
-                children: [
-                  SearchHeader(items: items),
-                  Expanded(
-                    child: GridView.builder(
-                        itemCount: items.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Column(
+            children: [
+              SearchHeader(items: items),
+              items.length > 0
+                  ? Expanded(
+                      child: GridView.builder(
+                          itemCount: items.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                          ),
+                          itemBuilder: (context, index) {
+                            Item i = items[index];
+                            return AnimationConfiguration.staggeredGrid(
+                                columnCount: 2,
+                                position: index,
+                                child: FadeInAnimation(
+                                  delay:
+                                      Duration(milliseconds: 20 + (20 * index)),
+                                  duration: const Duration(milliseconds: 200),
+                                  child: GridItemWidget(item: i, isGrid: true),
+                                ));
+                          }),
+                    )
+                  : Expanded(
+                      child: Center(
+                        child: Text(
+                          "NO ITEMS",
+                          style: TextStyle(
+                              fontSize: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .fontSize,
+                              letterSpacing: 1.5),
                         ),
-                        itemBuilder: (context, index) {
-                          Item i = items[index];
-                          return AnimationConfiguration.staggeredGrid(
-                              columnCount: 2,
-                              position: index,
-                              child: FadeInAnimation(
-                                delay:
-                                    Duration(milliseconds: 20 + (20 * index)),
-                                duration: const Duration(milliseconds: 200),
-                                child: GridItemWidget(item: i, isGrid: true),
-                              ));
-                        }),
-                  ),
-                ],
-              )
-            : Center(
-                child: Text(
-                  "NO ITEMS",
-                  style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.headline6.fontSize,
-                      letterSpacing: 1.5),
-                ),
-              ),
-      ),
+                      ),
+                    ),
+            ],
+          )),
     );
   }
 

@@ -77,11 +77,17 @@ class Person {
   }
 
   /// Add a new outfit to the Person object, re-serialise.
-  void addOutfit(String name, List<Item> accessories, List<Item> layers,
-      Item pants, Item shoes) {
-    outfits.add(new Outfit(name, accessories, layers, pants, shoes));
+  void addOutfit(Outfit o) {
+    outfits.add(o);
     storage.setItem('person', this.toJson());
+    print("Outfit ${o.name} ADDED!");
   }
+
+//  void addOutfit(String name, List<Item> accessories, List<Item> layers,
+//      Item pants, Item shoes) {
+//    outfits.add(new Outfit(name, accessories, layers, pants, shoes));
+//    storage.setItem('person', this.toJson());
+//  }
 
   /// Remove outfit from Person object, re-serialise.
   /// Returns true if the outfit is removed successfully.

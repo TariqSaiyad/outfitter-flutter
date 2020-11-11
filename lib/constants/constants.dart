@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
 
+//const String SHIRTS ="Shirts";
+//const String HOODIES ="Hoodies";
+//const String SHIRTS ="Jackets";
+//const String SHIRTS ="Pants";
+
 const List TYPES = [
   {"name": "shirts", "image": "shirts.jpg"},
   {"name": "hoodies", "image": "hoodies.jpg"},
+  {"name": "jackets", "image": "shirts2.jpg"},
   {"name": "pants", "image": "pants.jpg"},
   {"name": "shorts", "image": "shorts.jpg"},
-  {"name": "jackets", "image": "shirts2.jpg"},
   {"name": "shoes", "image": "shoes.jpg"},
   {"name": "accessories", "image": "acc.jpg"},
 ];
 
 const List<String> CATEGORY_LIST = [
   "Shirts",
-  "Pants",
-  "Jackets",
   "Hoodies",
+  "Jackets",
+  "Pants",
   "Shorts",
+  "Shoes",
   "Accessories",
-  "Shoes"
+];
+
+const List<String> LAYERS_LIST = [
+  "Shirts",
+  "Hoodies",
+  "Jackets",
+];
+const List<String> LEGWEAR_LIST = [
+  "Pants",
+  "Shorts",
 ];
 
 const Map<String, Color> COLORS_LIST = {
@@ -36,3 +51,6 @@ const Map<String, Color> COLORS_LIST = {
 
 const List DRESS_CODES = ["Streetwear", "Casual", "Business Casual", "Formal"];
 const List CLOTHING_TYPES = ["Warm", "Cool", "Neutral", "Weatherproof"];
+
+const int MAX_ACCESSORIES = 4;
+const int MAX_LAYERS = 2;

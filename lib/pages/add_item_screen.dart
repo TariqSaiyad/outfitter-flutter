@@ -93,24 +93,16 @@ class _AddItemScreenState extends State<AddItemScreen>
   }
 
   Widget _addItemForm() {
-    List<IconData> icons = [
-      Icons.ac_unit,
-      Icons.account_balance,
-      Icons.adb,
-      Icons.add_photo_alternate,
-      Icons.format_line_spacing
-    ];
-
     return DraggableBottomSheet(
       minExtent: MediaQuery.of(context).size.height * 0.2,
       maxExtent: MediaQuery.of(context).size.height * 0.8,
       backgroundWidget: _thumbnailWidget(),
       previewChild: PreviewFormWidget(context: context),
-      expandedChild: _expandedForm(icons),
+      expandedChild: _expandedForm(),
     );
   }
 
-  Widget _expandedForm(List<IconData> icons) {
+  Widget _expandedForm() {
     return Container(
         decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,

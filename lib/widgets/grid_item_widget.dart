@@ -1,27 +1,40 @@
 import 'dart:io';
 
 import 'package:Outfitter/models/item.dart';
+import 'package:Outfitter/models/outfit.dart';
 import 'package:Outfitter/pages/item_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class GridItemWidget extends StatelessWidget {
   const GridItemWidget(
-      {Key key, @required this.item, this.isGrid = true, this.removeItemFn})
+      {Key key,
+      @required this.item,
+      this.isGrid = true,
+      this.removeItemFn,
+      this.outfit,
+      this.showName = true,
+      this.onTap})
       : super(key: key);
 
   final Item item;
+  final Outfit outfit;
   final Function removeItemFn;
   final bool isGrid;
+  final bool showName;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
-    return isGrid ? buildHero(context) : buildDisplay(context);
+    String tag =
+        "${item.name}-${item.category}-${item.color}${outfit != null ? outfit.name : ""}";
+
+    return isGrid ? buildHero(context, tag) : buildDisplay(tag);
   }
 
-  Widget buildDisplay(BuildContext context) {
+  Widget buildDisplay(String tag) {
     return Hero(
-      tag: "${item.name}-${item.category}-${item.color}",
+      tag: tag,
       child: Container(
         child: Stack(
           children: [
@@ -53,12 +66,14 @@ class GridItemWidget extends StatelessWidget {
     );
   }
 
-  Hero buildHero(BuildContext context) {
+  Hero buildHero(BuildContext context, String tag) {
     return Hero(
-      tag: "${item.name}-${item.category}-${item.color}",
+      tag: tag,
       child: Container(
         decoration: BoxDecoration(
-            color: item.materialColor, borderRadius: BorderRadius.circular(20)),
+            border: showName ? null : Border.all(color: item.materialColor),
+            color: item.materialColor,
+            borderRadius: BorderRadius.circular(8)),
         child: Stack(
           children: [
             Positioned.fill(
@@ -70,7 +85,7 @@ class GridItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-            _titleWidget(),
+            showName ? _titleWidget() : const SizedBox(),
             Positioned.fill(
               child: Material(
                 color: Colors.transparent,
@@ -78,10 +93,16 @@ class GridItemWidget extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                   splashColor: item.materialColor.withOpacity(0.5),
                   onTap: () {
+                    if (onTap != null) {
+                      onTap();
+                      return;
+                    }
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) {
-                        return ItemDetailScreen(item: item, removeItemFn:removeItemFn);
+                        return ItemDetailScreen(
+                            item: item, removeItemFn: removeItemFn);
                       }),
                     );
                   },
