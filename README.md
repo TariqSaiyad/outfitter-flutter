@@ -1,3 +1,5 @@
+![Flutter](https://github.com/TariqSaiyad/outfitter-flutter/workflows/Dart/badge.svg)
+
 # outfitter-flutter
 Outfitter App rebuilt using Google Flutter
 
