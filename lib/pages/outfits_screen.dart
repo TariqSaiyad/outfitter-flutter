@@ -2,9 +2,7 @@ import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
-import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 
 class OutfitScreen extends StatefulWidget {
   OutfitScreen({this.person});
@@ -88,53 +86,53 @@ class _OutfitScreenState extends State<OutfitScreen> {
     );
   }
 
-  Widget _buildOutfit(Outfit o) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-      child: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Swiper(
-                controller: SwiperController(),
-//            onTap: (int val) => resetIndex(),
-                scale: 0.6,
-                viewportFraction: 0.5,
-                scrollDirection: Axis.horizontal,
-//            onIndexChanged: (int val) => widget.onUpdate(val),
-                itemCount: o.layers.length,
-                itemBuilder: (context, index) {
-                  return GridItemWidget(
-                    item: o.layers[index],
-                  );
-                },
-              ),
-            ),
-            Expanded(
-                child: GridItemWidget(
-              item: o.pants,
-            )),
-            Expanded(
-                child: GridItemWidget(
-              item: o.shoes,
-            )),
-            Expanded(
-              child: Swiper(
-                controller: SwiperController(),
-                scale: 0.6,
-                viewportFraction: 0.5,
-                scrollDirection: Axis.horizontal,
-                itemCount: o.accessories.length,
-                itemBuilder: (context, index) {
-                  return GridItemWidget(
-                    item: o.accessories[index],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+//  Widget _buildOutfit(Outfit o) {
+//    return Padding(
+//      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+//      child: Container(
+//        child: Column(
+//          children: [
+//            Expanded(
+//              child: Swiper(
+//                controller: SwiperController(),
+////            onTap: (int val) => resetIndex(),
+//                scale: 0.6,
+//                viewportFraction: 0.5,
+//                scrollDirection: Axis.horizontal,
+////            onIndexChanged: (int val) => widget.onUpdate(val),
+//                itemCount: o.layers.length,
+//                itemBuilder: (context, index) {
+//                  return GridItemWidget(
+//                    item: o.layers[index],
+//                  );
+//                },
+//              ),
+//            ),
+//            Expanded(
+//                child: GridItemWidget(
+//              item: o.pants,
+//            )),
+//            Expanded(
+//                child: GridItemWidget(
+//              item: o.shoes,
+//            )),
+//            Expanded(
+//              child: Swiper(
+//                controller: SwiperController(),
+//                scale: 0.6,
+//                viewportFraction: 0.5,
+//                scrollDirection: Axis.horizontal,
+//                itemCount: o.accessories.length,
+//                itemBuilder: (context, index) {
+//                  return GridItemWidget(
+//                    item: o.accessories[index],
+//                  );
+//                },
+//              ),
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
 }
