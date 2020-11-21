@@ -93,15 +93,12 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Add Item", style: TextStyle(color: Colors.white)),
-                    SizedBox(
+                    const Text("Add Item"),
+                    const SizedBox(
                       width: 10,
                       height: 40,
                     ),
-                    Icon(
-                      Icons.check,
-                      color: Colors.white,
-                    )
+                    const Icon(Icons.check)
                   ],
                 ),
                 onPressed: (_formKey != null &&
@@ -126,7 +123,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
         },
         autofocus: false,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        style: TextStyle(color: Colors.white),
+
         maxLines: 1,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(

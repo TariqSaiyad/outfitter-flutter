@@ -32,13 +32,14 @@ dependencies:
   search_page: ^1.3.0
   flutter_staggered_animations: "^0.1.2"
   flutter_swiper: ^1.1.6
+  direct_select_flutter: ^1.0.6
 
 
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  cupertino_icons: ^0.1.3
 
 dev_dependencies:
   flutter_test:

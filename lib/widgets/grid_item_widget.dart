@@ -26,6 +26,7 @@ class GridItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // set the hero animation key here.
     String tag =
         "${item.name}-${item.category}-${item.color}${outfit != null ? outfit.name : ""}";
 
@@ -48,18 +49,6 @@ class GridItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-//            Positioned.fill(
-//              child: Align(
-//                alignment: Alignment.topLeft,
-//                child: Material(
-//                  color: Colors.transparent,
-//                  child: Row(
-//                    children: [BackButton()],
-//                  ),
-//                ),
-//              ),
-//            )
-//            _titleWidget(),
           ],
         ),
       ),

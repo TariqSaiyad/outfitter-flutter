@@ -29,11 +29,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     controller = PageController(initialPage: currentPage);
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page.floor();
-      });
-    });
+    controller.addListener(
+        () => setState(() => currentPage = controller.page.floor()));
   }
 
   Future<bool> initData() {
@@ -53,22 +50,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        floatingActionButton: currentPage == 2
-            ? FloatingActionButton.extended(
-                heroTag: null,
-                autofocus: true,
-                highlightElevation: 0,
-                splashColor: Theme.of(context).primaryColor,
-                onPressed: () => _goToAddOutfit(context),
-                label: Text("Add Outfit"),
-              )
-            : null,
+        floatingActionButton: _getFAB(context),
 //      resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: currentPage == 0 ? 0 : null,
-          title: Text(
-            "Outfitter",
+          title: const Text(
+            "OUTFITTER",
             style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
@@ -91,31 +79,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               TabItem(title: "Items", icon: Icons.style_outlined),
               TabItem(title: "Outfits", icon: Icons.checkroom_rounded),
             ],
-            onTap: (int i) {
-              controller.animateToPage(i,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut);
-            }),
+            onTap: (int i) => _goToPage(i)),
         body: FutureBuilder(
           future: initData(),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.hasData) {
               return PageView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: controller,
                 children: <Widget>[
                   AddItemScreen(
                     cameras: widget.cameras,
                     person: person,
                   ),
-                  _itemsScreen(),
+                  ItemsScreen(person: person),
                   OutfitScreen(person: person),
                 ],
               );
             }
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ));
+  }
+
+  FloatingActionButton _getFAB(BuildContext context) {
+    return currentPage == 2
+        ? FloatingActionButton.extended(
+            heroTag: null,
+            autofocus: true,
+            highlightElevation: 0,
+            splashColor: Theme.of(context).primaryColor,
+            onPressed: () => _goToAddOutfit(context),
+            label: Text("Add Outfit"),
+          )
+        : null;
+  }
+
+  void _goToPage(int i) {
+    controller.animateToPage(i,
+        duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
   void _goToSearch(BuildContext context) {
@@ -129,17 +131,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         MaterialPageRoute(
             builder: (context) => AddOutfitScreen(person: person)));
   }
+}
 
-  Widget _itemsScreen() {
+class ItemsScreen extends StatelessWidget {
+  const ItemsScreen({
+    Key key,
+    @required this.person,
+  }) : super(key: key);
+
+  final Person person;
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
         child: Column(children: [
       const SizedBox(height: 4),
       for (var i in TYPES)
         Expanded(
-            child: ItemTile(
-          person: person,
-          type: i,
-        )),
+          child: ItemTile(
+            person: person,
+            type: i,
+          ),
+        ),
       const SizedBox(height: 4),
     ]));
   }
