@@ -44,7 +44,11 @@ class ItemTile extends StatelessWidget {
                   },
                   child: Row(
                     children: [
-                      isDisplay ? BackButton() : SizedBox(width: 12),
+                      isDisplay
+                          ? BackButton(
+                              color: Colors.white,
+                            )
+                          : SizedBox(width: 12),
                       Text(
                         type['name'].toString().toUpperCase(),
                         style: TextStyle(

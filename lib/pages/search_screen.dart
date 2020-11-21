@@ -139,31 +139,32 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             children: [
               SearchHeader(items: items),
-              items.length > 0
-                  ? Expanded(
-                      child: GridView.builder(
-                          itemCount: items.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                          ),
-                          itemBuilder: (context, index) {
-                            Item i = items[index];
-                            return AnimationConfiguration.staggeredGrid(
-                                columnCount: 2,
-                                position: index,
-                                child: FadeInAnimation(
-                                  delay:
-                                      Duration(milliseconds: 20 + (20 * index)),
-                                  duration: const Duration(milliseconds: 200),
-                                  child: GridItemWidget(item: i, isGrid: true),
-                                ));
-                          }),
-                    )
-                  : Expanded(
-                      child: Center(
+              Expanded(
+                  child: AnimatedSwitcher(
+                switchOutCurve: Curves.easeIn,
+                switchInCurve: Curves.easeIn,
+                duration: const Duration(milliseconds: 300),
+                child: items.length > 0
+                    ? GridView.builder(
+                        itemCount: items.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemBuilder: (context, index) {
+                          Item i = items[index];
+                          return AnimationConfiguration.staggeredGrid(
+                              columnCount: 2,
+                              position: index,
+                              child: FadeInAnimation(
+                                delay:
+                                    Duration(milliseconds: 20 + (20 * index)),
+                                duration: const Duration(milliseconds: 200),
+                                child: GridItemWidget(item: i, isGrid: true),
+                              ));
+                        })
+                    : Center(
                         child: Text(
                           "NO ITEMS",
                           style: TextStyle(
@@ -174,46 +175,11 @@ class _SearchScreenState extends State<SearchScreen> {
                               letterSpacing: 1.5),
                         ),
                       ),
-                    ),
+              ))
             ],
           )),
     );
   }
-
-//  Widget _searchInputs(BuildContext context) {
-//    return Container(
-//      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//      decoration: BoxDecoration(
-//          borderRadius: BorderRadius.circular(12),
-//          color: Theme.of(context).primaryColor),
-//      child: ListView(
-//        itemExtent: 65,
-//        children: [
-//          _nameInput(),
-//          InputSwiper(
-//            title: "Category",
-//            onUpdate: updateCategory,
-//            itemList: categoryList,
-//          ),
-//          InputSwiper(
-//            title: "Color",
-//            onUpdate: updateColor,
-//            itemMap: colorList,
-//          ),
-//          InputSwiper(
-//            title: "Dress Code",
-//            onUpdate: updateCode,
-//            itemList: codeList,
-//          ),
-//          InputSwiper(
-//            title: "Type",
-//            onUpdate: updateType,
-//            itemList: typeList,
-//          ),
-//        ],
-//      ),
-//    );
-//  }
 
   Widget _nameInput() {
     return Padding(
@@ -322,13 +288,10 @@ class SearchHeader extends StatelessWidget {
       child: Row(
         children: [
           BackButton(),
-          Text(
+          const Text(
             "ITEM SEARCH",
             style: TextStyle(
-                color: Colors.white,
-                letterSpacing: 2,
-                fontWeight: FontWeight.w400,
-                fontSize: 20),
+                letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
           ),
           const Spacer(),
           CircleAvatar(

@@ -1,4 +1,3 @@
-
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
@@ -24,10 +23,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void initState() {
     super.initState();
     print(widget.type['name']);
-    getItems();
+    _getItems();
   }
 
-  void getItems() {
+  /// Filter the items for this category.
+  void _getItems() {
     setState(() {
       items = widget.person.items
           .where((element) =>
@@ -37,14 +37,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  void removeItem(Item i) {
+  /// Remove the item and display a snackbar.
+  /// When the item is removed, update the item list.
+  void _removeItem(Item i) {
     widget.person.removeItem(i);
     globalKey.currentState.showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Text('${i.name} has been removed')));
 
-    getItems();
+    _getItems();
   }
 
   @override
@@ -69,7 +71,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       itemBuilder: (context, index) {
                         Item i = items[index];
                         return GridItemWidget(
-                            item: i, removeItemFn: removeItem);
+                            item: i, removeItemFn: _removeItem);
                       }),
                 ),
               )

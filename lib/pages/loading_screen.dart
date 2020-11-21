@@ -9,13 +9,11 @@ class LoadingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            const SizedBox(
-              height: 30,
-            ),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 30),
             const Text("LOADING...",
                 style: TextStyle(letterSpacing: 2),
-                textDirection: TextDirection.ltr,)
+                textDirection: TextDirection.ltr)
           ],
         ),
       ),

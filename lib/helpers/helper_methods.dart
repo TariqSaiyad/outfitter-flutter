@@ -24,7 +24,7 @@ class Helper {
   }
 
   /// Gets the number of items saved in a particular category.
-  /// TODO: save into a map for efficiency, store in Person object.
+  @deprecated
   static String itemCount(dynamic type, Person p) {
     if (p == null) return "!";
     return p.items

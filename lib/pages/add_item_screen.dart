@@ -86,10 +86,18 @@ class _AddItemScreenState extends State<AddItemScreen>
 
   @override
   Widget build(BuildContext context) {
-    return isCamera
-        ? CameraPreviewWidget(
-            controller: controller, onTakePicture: onTakePicture)
-        : _addItemForm();
+    // if photo has been taken, switch from camera to add item form.
+    return AnimatedSwitcher(
+      switchInCurve: Curves.easeIn,
+      switchOutCurve: Curves.easeIn,
+      duration: const Duration(
+        milliseconds: 300,
+      ),
+      child: isCamera
+          ? CameraPreviewWidget(
+              controller: controller, onTakePicture: onTakePicture)
+          : _addItemForm(),
+    );
   }
 
   Widget _addItemForm() {
@@ -140,13 +148,7 @@ class _AddItemScreenState extends State<AddItemScreen>
         : Stack(
             children: [
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ImageView(file: imagePath)),
-                  );
-                },
+                onTap: goToImageView,
                 child: Hero(
                   tag: imagePath,
                   child: Image.file(
@@ -173,6 +175,13 @@ class _AddItemScreenState extends State<AddItemScreen>
               )
             ],
           );
+  }
+
+  void goToImageView() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ImageView(file: imagePath)),
+    );
   }
 
   void showInSnackBar(String message) {
@@ -210,12 +219,6 @@ class _AddItemScreenState extends State<AddItemScreen>
     }
     return filePath;
   }
-
-  void onDeleteImage() {
-    setState(() {
-      imagePath = null;
-    });
-  }
 }
 
 class PreviewFormWidget extends StatelessWidget {
@@ -229,7 +232,7 @@ class PreviewFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.only(
@@ -261,19 +264,24 @@ class PreviewFormWidget extends StatelessWidget {
 class ImageView extends StatelessWidget {
   final String file;
 
+  ImageView({this.file});
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: Image.file(
-            File(file),
-            fit: BoxFit.contain,
+          child: InteractiveViewer(
+            child: Hero(
+              tag: file,
+              child: Image.file(
+                File(file),
+                fit: BoxFit.contain,
+              ),
+            ),
           )),
     );
   }
-
-  ImageView({this.file});
 }
 
 class CameraPreviewWidget extends StatelessWidget {
@@ -290,7 +298,7 @@ class CameraPreviewWidget extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              Spacer(),
+              const Spacer(),
               Expanded(
                 child: FloatingActionButton(
                   tooltip: "Take picture of item",
@@ -302,12 +310,14 @@ class CameraPreviewWidget extends StatelessWidget {
                   child: const Icon(Icons.camera_alt),
                 ),
               ),
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.info_outline),
-                  onPressed: () => print("HELP!"),
-                ),
-              ),
+              const Spacer(),
+//TODO: add help dialog here!
+//              Expanded(
+//                child: IconButton(
+//                  icon: const Icon(Icons.info_outline),
+//                  onPressed: () => print("HELP!"),
+//                ),
+//              ),
             ],
           ),
         )
@@ -316,19 +326,10 @@ class CameraPreviewWidget extends StatelessWidget {
   }
 
   Widget _cameraPreviewWidget() {
-    if (controller == null || !controller.value.isInitialized) {
-      return const Text(
-        'Initialising...',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 24.0,
-          letterSpacing: 3,
-        ),
-      );
-    } else {
-      return AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: CameraPreview(controller));
-    }
+    return controller == null || !controller.value.isInitialized
+        ? const Text('Initialising...')
+        : AspectRatio(
+            aspectRatio: controller.value.aspectRatio,
+            child: CameraPreview(controller));
   }
 }

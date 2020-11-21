@@ -111,12 +111,16 @@ class ItemDetail extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Container(
+//            padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-              color: bgCol, borderRadius: BorderRadius.circular(16)),
+              color: bgCol, borderRadius: BorderRadius.circular(8)),
           child: ListTile(
             visualDensity: VisualDensity.standard,
             title: value != null ? Text(value) : child,
-            trailing: Text(attribute),
+            trailing: Text(
+              attribute,
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
         ),
       ),
@@ -155,12 +159,15 @@ class SliverItemTitle extends StatelessWidget {
         ),
         Row(
           children: [
-            Spacer(),
+            const Spacer(),
             Text(
               title,
-              style: TextStyle(fontSize: 18, letterSpacing: 1),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  .copyWith(letterSpacing: 1),
             ),
-            Spacer(),
+            const Spacer(),
             trailing != null
                 ? Padding(
                     padding: EdgeInsets.only(right: 16 * (1 - offset) + 8),
