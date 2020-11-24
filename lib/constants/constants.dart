@@ -49,6 +49,12 @@ const Map<String, Color> COLORS_LIST = {
   "white": Colors.white
 };
 
+const Map<int, String> SCREEN_MAP = {
+  0: "add_item_page",
+  1: "home_page",
+  2: "outfit_page"
+};
+
 const List DRESS_CODES = ["Streetwear", "Casual", "Business Casual", "Formal"];
 const List CLOTHING_TYPES = ["Warm", "Cool", "Neutral", "Weatherproof"];
 

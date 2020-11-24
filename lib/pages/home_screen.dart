@@ -5,16 +5,40 @@ import 'package:Outfitter/pages/search_screen.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:camera/camera.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/constants.dart';
 import 'add_item_screen.dart';
 import 'add_outfit_screen.dart';
 
+//Add the following code inside the State of the StatefulWidget
+const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['clothing', 'outfits', 'jacket', 'footwear', 'shoes'],
+  //Add your own keywords
+  contentUrl: 'Test content',
+  //Add a contentURL if any
+  childDirected: false,
+  //Choose whether childDirected or not
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+InterstitialAd myInterstitial = InterstitialAd(
+  adUnitId: "ca-app-pub-6887785718682987/3507634048",
+//  adUnitId: InterstitialAd.testAdUnitId,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);
+
 class HomeScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final FirebaseAnalytics analytics;
 
-  const HomeScreen({Key key, this.cameras}) : super(key: key);
+  const HomeScreen({Key key, this.cameras, this.analytics}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -26,8 +50,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   PageController controller;
 
   @override
+  void dispose() {
+    super.dispose();
+    myInterstitial?.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
+//    myBanner
+//      ..load()
+//      ..show(
+//        anchorOffset: 60,
+//        anchorType: AnchorType.top,
+//      ); //
+
+    myInterstitial
+      ..load()
+      ..show(); // load Banner Ad
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
@@ -116,16 +156,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _goToPage(int i) {
+    widget.analytics.setCurrentScreen(screenName: SCREEN_MAP[i]);
     controller.animateToPage(i,
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
   void _goToSearch(BuildContext context) {
+    widget.analytics.setCurrentScreen(screenName: "search_page");
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => SearchScreen(person: person)));
   }
 
   void _goToAddOutfit(BuildContext context) {
+    widget.analytics.setCurrentScreen(screenName: "add_outfit_page");
     Navigator.push(
         context,
         MaterialPageRoute(
