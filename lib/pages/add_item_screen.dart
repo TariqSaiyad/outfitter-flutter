@@ -180,7 +180,8 @@ class _AddItemScreenState extends State<AddItemScreen>
   void goToImageView() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ImageView(file: imagePath)),
+      MaterialPageRoute(settings: RouteSettings(name: 'image_view_page'),
+          builder: (context) => ImageView(file: imagePath)),
     );
   }
 

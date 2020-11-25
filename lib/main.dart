@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 
 // Import the firebase_core plugin
@@ -41,6 +42,9 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Outfitter',
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+      ],
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.blue,

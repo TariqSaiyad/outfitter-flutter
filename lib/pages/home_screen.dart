@@ -14,26 +14,6 @@ import '../constants/constants.dart';
 import 'add_item_screen.dart';
 import 'add_outfit_screen.dart';
 
-//Add the following code inside the State of the StatefulWidget
-const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-  keywords: <String>['clothing', 'outfits', 'jacket', 'footwear', 'shoes'],
-  //Add your own keywords
-  contentUrl: 'Test content',
-  //Add a contentURL if any
-  childDirected: false,
-  //Choose whether childDirected or not
-  testDevices: <String>[], // Android emulators are considered test devices
-);
-
-InterstitialAd myInterstitial = InterstitialAd(
-  adUnitId: "ca-app-pub-6887785718682987/3507634048",
-//  adUnitId: InterstitialAd.testAdUnitId,
-  targetingInfo: targetingInfo,
-  listener: (MobileAdEvent event) {
-    print("InterstitialAd event is $event");
-  },
-);
-
 class HomeScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final FirebaseAnalytics analytics;
@@ -49,6 +29,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int currentPage = 1;
   PageController controller;
 
+//Add the following code inside the State of the StatefulWidget
+  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['clothing', 'outfits', 'jacket', 'footwear', 'shoes'],
+    childDirected: false,
+    testDevices: <String>[],
+  );
+
+  InterstitialAd myInterstitial = InterstitialAd(
+    adUnitId: "ca-app-pub-6887785718682987/3507634048",
+//  adUnitId: InterstitialAd.testAdUnitId,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("InterstitialAd event is $event");
+    },
+  );
+
   @override
   void dispose() {
     super.dispose();
@@ -58,16 +54,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-//    myBanner
-//      ..load()
-//      ..show(
-//        anchorOffset: 60,
-//        anchorType: AnchorType.top,
-//      ); //
 
     myInterstitial
       ..load()
-      ..show(); // load Banner Ad
+      ..show();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
@@ -156,23 +146,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _goToPage(int i) {
-    widget.analytics.setCurrentScreen(screenName: SCREEN_MAP[i]);
+    setScreen(SCREEN_MAP[i]);
     controller.animateToPage(i,
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
   void _goToSearch(BuildContext context) {
-    widget.analytics.setCurrentScreen(screenName: "search_page");
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SearchScreen(person: person)));
-  }
-
-  void _goToAddOutfit(BuildContext context) {
-    widget.analytics.setCurrentScreen(screenName: "add_outfit_page");
+    setScreen("search_page");
     Navigator.push(
         context,
         MaterialPageRoute(
+            settings: RouteSettings(name: 'search_page'),
+            builder: (context) => SearchScreen(person: person)));
+  }
+
+  void _goToAddOutfit(BuildContext context) {
+    setScreen("add_outfit_page");
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: 'add_outfit_page'),
             builder: (context) => AddOutfitScreen(person: person)));
+  }
+
+  void setScreen(String s) {
+    print("Going to $s");
+    widget.analytics
+        .setCurrentScreen(screenName: s, screenClassOverride: s + "_class");
   }
 }
 

@@ -89,7 +89,8 @@ class GridItemWidget extends StatelessWidget {
 
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) {
+                      MaterialPageRoute(settings: RouteSettings(name: 'item_page'),
+                          builder: (context) {
                         return ItemDetailScreen(
                             item: item, removeItemFn: removeItemFn);
                       }),
