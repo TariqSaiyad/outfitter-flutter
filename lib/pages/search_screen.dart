@@ -80,16 +80,6 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
         ));
-
-//      body: Column(
-//        children: [
-//          const SizedBox(height: 8),
-//          SearchHeader(items: items),
-//          Expanded(child: _itemResults()),
-//          Expanded(child: _searchInputs(context)),
-//        ],
-//      ),
-    //);
   }
 
   SliverChildListDelegate _buildInputs() {
@@ -134,50 +124,46 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _itemResults() {
     return Container(
-      child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Column(
-            children: [
-              SearchHeader(items: items),
-              Expanded(
-                  child: AnimatedSwitcher(
-                switchOutCurve: Curves.easeIn,
-                switchInCurve: Curves.easeIn,
-                duration: const Duration(milliseconds: 300),
-                child: items.length > 0
-                    ? GridView.builder(
-                        itemCount: items.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
-                        itemBuilder: (context, index) {
-                          Item i = items[index];
-                          return AnimationConfiguration.staggeredGrid(
-                              columnCount: 2,
-                              position: index,
-                              child: FadeInAnimation(
-                                delay:
-                                    Duration(milliseconds: 20 + (20 * index)),
-                                duration: const Duration(milliseconds: 200),
-                                child: GridItemWidget(item: i, isGrid: true),
-                              ));
-                        })
-                    : Center(
-                        child: Text(
-                          "NO ITEMS",
-                          style: TextStyle(
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .fontSize,
-                              letterSpacing: 1.5),
-                        ),
-                      ),
-              ))
-            ],
-          )),
+      child: Column(
+        children: [
+          SearchHeader(items: items),
+          Expanded(
+              child: AnimatedSwitcher(
+            switchOutCurve: Curves.easeIn,
+            switchInCurve: Curves.easeIn,
+            duration: const Duration(milliseconds: 300),
+            child: items.length > 0
+                ? GridView.builder(
+                    padding: const EdgeInsets.all(8),
+                    itemCount: items.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      Item i = items[index];
+                      return AnimationConfiguration.staggeredGrid(
+                          columnCount: 2,
+                          position: index,
+                          child: FadeInAnimation(
+                            delay: Duration(milliseconds: 20 + (20 * index)),
+                            duration: const Duration(milliseconds: 200),
+                            child: GridItemWidget(item: i, isGrid: true),
+                          ));
+                    })
+                : Center(
+                    child: Text(
+                      "NO ITEMS",
+                      style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.headline6.fontSize,
+                          letterSpacing: 1.5),
+                    ),
+                  ),
+          ))
+        ],
+      ),
     );
   }
 
@@ -283,28 +269,26 @@ class SearchHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          BackButton(),
-          const Text(
-            "ITEM SEARCH",
-            style: TextStyle(
-                letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
-          ),
-          const Spacer(),
-          CircleAvatar(
-            backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
-            radius: 16,
-            child: Text(items.length.toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 18)),
-          ),
-        ],
+    return AppBar(
+      title: const Text(
+        "ITEM SEARCH",
+        style: const TextStyle(
+            letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
       ),
+      actions: [
+        CircleAvatar(
+          backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
+          radius: 16,
+          child: Text(items.length.toString(),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 18)),
+        ),
+        const SizedBox(
+          width: 8,
+        )
+      ],
     );
   }
 }

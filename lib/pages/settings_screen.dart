@@ -17,13 +17,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _setColor(String key) {
     Navigator.of(context).pop();
-
-//    PrefService.setInt('primary_col', Colors.teal.value);
-
     PrefService.setInt(key, _tempShadeColor.value);
+    updateTheme();
+  }
+
+  void updateTheme() {
     DynamicTheme.of(context).setThemeData(
       ThemeData(
-        brightness: Brightness.dark,
+        brightness: PrefService.getInt("app_theme") == 0
+            ? Brightness.dark
+            : Brightness.light,
         primaryColor: Color(PrefService.getInt("primary_col")),
         accentColor: Color(PrefService.getInt("accent_col")),
       ),
@@ -36,27 +39,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     //TODO: Settings. Themes (light,dark, primary, accent), Add new categories...
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "SETTINGS",
+          style: TextStyle(
+              letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                BackButton(),
-                const Text(
-                  "SETTINGS",
-                  style: TextStyle(
-                      letterSpacing: 2,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 20),
-                ),
-              ],
-            ),
             Flexible(
                 child: PreferencePage([
               PreferenceTitle('Customisation'),
               _colorTile(context, 'primary_col'),
               _colorTile(context, 'accent_col'),
+              DropdownPreference<int>(
+                'App Theme',
+                'app_theme',
+                defaultVal: PrefService.getInt('app_theme'),
+                displayValues: ['Dark', 'Light'],
+                values: [0, 1],
+                onChange: (val) => updateTheme(),
+              ),
               _aboutDialog(context)
             ]))
           ],
