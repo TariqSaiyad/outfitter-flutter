@@ -57,15 +57,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    myInterstitial
-      ..load()
-      ..show();
+    _showAd();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
 
     // set init screen as homepage.
     setScreen(SCREEN_MAP[1]);
+  }
+
+  void _showAd() async {
+//    TODO: add random event.
+//    Random rand = new Random();
+//    if (rand.nextBool()) return;
+    await myInterstitial.load();
+    myInterstitial.show();
   }
 
   Future<bool> initData() {

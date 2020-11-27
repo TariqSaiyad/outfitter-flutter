@@ -36,7 +36,7 @@ Future<void> main() async {
   PrefService.setDefaultValues({
     'primary_col': Colors.deepPurple.value,
     'accent_col': Colors.pinkAccent.value,
-    'app_theme': 0
+    'app_theme_bool': true
   });
   runApp(App());
 }
@@ -48,7 +48,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-      defaultBrightness: PrefService.getInt("app_theme") == 0
+      defaultBrightness: PrefService.getBool("app_theme_bool")
           ? Brightness.dark
           : Brightness.light,
       data: (brightness) => ThemeData(
@@ -64,7 +64,7 @@ class App extends StatelessWidget {
               FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
             ],
             theme: theme,
-            themeMode: PrefService.getInt("app_theme") == 0
+            themeMode: PrefService.getBool("app_theme_bool")
                 ? ThemeMode.dark
                 : ThemeMode.light,
             home: HomeScreen(

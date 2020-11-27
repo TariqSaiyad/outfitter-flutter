@@ -2,6 +2,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:preferences/preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function setScreen;
@@ -21,10 +22,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     updateTheme();
   }
 
+  void _launchURL() async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: 'tariqsaiyad98@gmail.com',
+    );
+    String url = params.toString();
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
   void updateTheme() {
     DynamicTheme.of(context).setThemeData(
       ThemeData(
-        brightness: PrefService.getInt("app_theme") == 0
+        brightness: PrefService.getBool("app_theme_bool")
             ? Brightness.dark
             : Brightness.light,
         primaryColor: Color(PrefService.getInt("primary_col")),
@@ -52,15 +66,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               PreferenceTitle('Customisation'),
               _colorTile(context, 'primary_col'),
               _colorTile(context, 'accent_col'),
-              DropdownPreference<int>(
-                'App Theme',
-                'app_theme',
-                defaultVal: PrefService.getInt('app_theme'),
-                displayValues: ['Dark', 'Light'],
-                values: [0, 1],
-                onChange: (val) => updateTheme(),
+              SwitchPreference(
+                'Dark Mode',
+                'app_theme_bool',
+                defaultVal: PrefService.getBool('app_theme_bool'),
+                onChange: () => updateTheme(),
+                switchActiveColor: Color(PrefService.getInt('primary_col')),
               ),
-              _aboutDialog(context)
+              MaterialButton(
+                  padding: const EdgeInsets.all(8),
+                  child: const Text(
+                    "ABOUT APP",
+                    style: const TextStyle(letterSpacing: 1.5),
+                  ),
+                  onPressed: _showAboutDialog)
             ]))
           ],
         ),
@@ -68,26 +87,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Padding _aboutDialog(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: MaterialButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: const Text(
-            "ABOUT APP",
-            style: const TextStyle(letterSpacing: 1),
+  void _showAboutDialog() {
+    showAboutDialog(
+        context: context,
+        applicationName: 'Outfitter',
+        applicationVersion: "1.00",
+        applicationLegalese: "Developed by Tariq Saiyad",
+        children: <Widget>[
+          Divider(
+            color: Theme.of(context).primaryColor,
+            endIndent: 8,
+            indent: 8,
+            thickness: 1,
           ),
-          onPressed: () => showAboutDialog(
-              context: context,
-              applicationName: 'Outfitter',
-              applicationVersion: "1.00",
-              applicationLegalese: "Developed by Tariq Saiyad",
-              children: <Widget>[],
-              applicationIcon: Image.asset(
-                "assets/logo.png",
-                width: 80,
-              ))),
-    );
+          Text(
+            'Flick me an email if you have any feedback or questions :)',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+              onTap: _launchURL,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'tariqsaiyad98@gmail.com',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                  const Icon(
+                    Icons.launch,
+                    size: 18,
+                  )
+                ],
+              )),
+        ],
+        applicationIcon: Image.asset(
+          "assets/logo.png",
+          width: 80,
+        ));
   }
 
   ListTile _colorTile(BuildContext context, String key) {
