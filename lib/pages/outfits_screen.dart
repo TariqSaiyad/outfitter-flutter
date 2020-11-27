@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
 import 'package:Outfitter/models/person.dart';
@@ -17,7 +15,6 @@ class OutfitScreen extends StatefulWidget {
 }
 
 class _OutfitScreenState extends State<OutfitScreen> {
-
   void _confirmDeleteDialog(BuildContext context, Outfit o) {
     showDialog(
         context: context,

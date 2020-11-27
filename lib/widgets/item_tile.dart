@@ -35,6 +35,7 @@ class ItemTile extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
+                            settings: RouteSettings(name: 'category_page'),
                             builder: (context) => CategoryScreen(
                                   type: type,
                                   person: person,
