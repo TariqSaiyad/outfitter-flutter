@@ -22,6 +22,7 @@ FirebaseAnalytics _firebaseAnalytics;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // init firebase stuff
   await Firebase.initializeApp();
   print(_firebasePerformance.toString());
   cameras = await availableCameras();
