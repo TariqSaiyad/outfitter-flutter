@@ -31,13 +31,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         accentColor: Color(PrefService.getInt("accent_col")),
       ),
     );
-    //TODO: might not need
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Settings. Themes (light,dark, primary, accent), Add new categories...
     return Scaffold(
       appBar: AppBar(
         title: const Text(
