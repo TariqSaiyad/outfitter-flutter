@@ -1,7 +1,9 @@
+
 import 'package:Outfitter/constants/constants.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:Outfitter/pages/search_screen.dart';
+import 'package:Outfitter/pages/settings_screen.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:camera/camera.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -61,6 +63,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
+
+    // set init screen as homepage.
+    setScreen(SCREEN_MAP[1]);
   }
 
   Future<bool> initData() {
@@ -87,14 +92,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           toolbarHeight: currentPage == 0 ? 0 : null,
           title: const Text(
             "OUTFITTER",
-            style: TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
+            style:
+                const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
             IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () => _goToSearch(context)),
-//TODO: Settings. Themes (light,dark, primary, accent), Add new categories...
-//            IconButton(icon: Icon(Icons.settings), onPressed: () {})
+            IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => _goToSettings(context))
           ],
         ),
         bottomNavigationBar: ConvexAppBar(
@@ -151,22 +158,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
+  void _goToSettings(BuildContext context) {
+    setScreen("settings_page");
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'settings_page'),
+                builder: (context) => SettingsScreen(setScreen: setScreen)))
+        .then((value) => setScreen(SCREEN_MAP[currentPage]));
+  }
+
   void _goToSearch(BuildContext context) {
     setScreen("search_page");
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: 'search_page'),
-            builder: (context) => SearchScreen(person: person)));
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'search_page'),
+                builder: (context) => SearchScreen(person: person)))
+        .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void _goToAddOutfit(BuildContext context) {
     setScreen("add_outfit_page");
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: 'add_outfit_page'),
-            builder: (context) => AddOutfitScreen(person: person)));
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'add_outfit_page'),
+                builder: (context) => AddOutfitScreen(person: person)))
+        .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void setScreen(String s) {

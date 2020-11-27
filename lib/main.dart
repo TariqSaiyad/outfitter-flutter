@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:preferences/preferences.dart';
 
 import 'pages/home_screen.dart';
 
@@ -29,7 +31,11 @@ Future<void> main() async {
       .initialize(appId: "ca-app-pub-6887785718682987~8592633287");
 
   _firebaseAnalytics = FirebaseAnalytics();
-
+  await PrefService.init(prefix: 'pref_');
+  PrefService.setDefaultValues({
+    'primary_col': Colors.deepPurple.value,
+    'accent_col': Colors.pinkAccent.value
+  });
   runApp(App());
 }
 
@@ -39,56 +45,27 @@ class App extends StatelessWidget {
 //final Future<bool> _initialization = Future.delayed(Duration(milliseconds: 100));
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Outfitter',
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
-      ],
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.blue,
-        accentColor: Colors.deepOrangeAccent,
+    return DynamicTheme(
+      defaultBrightness: Brightness.dark,
+      data: (brightness) => ThemeData(
+        brightness: brightness,
+        primaryColor: Color(PrefService.getInt('primary_col')),
+        accentColor: Color(PrefService.getInt('accent_col')),
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.deepPurple,
-        accentColor: Colors.pinkAccent,
-      ),
-      themeMode: ThemeMode.dark,
-      home: HomeScreen(
-        cameras: cameras,
-        analytics: _firebaseAnalytics,
-      ),
+      themedWidgetBuilder: (context, theme) {
+        return MaterialApp(
+            title: 'Outfitter',
+            debugShowCheckedModeBanner: false,
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+            ],
+            theme: theme,
+            themeMode: ThemeMode.dark,
+            home: HomeScreen(
+              cameras: cameras,
+              analytics: _firebaseAnalytics,
+            ));
+      },
     );
-//    return FutureBuilder(
-//      future: _initialization,
-//      builder: (context, snapshot) {
-//        if (snapshot.hasError) {
-//          return LoadingScreen();
-//        }
-//        if (snapshot.connectionState == ConnectionState.done) {
-//          return new MaterialApp(
-//            title: 'Outfitter',
-//            debugShowCheckedModeBanner: false,
-//            theme: ThemeData(
-//              brightness: Brightness.light,
-//              primaryColor: Colors.blue,
-//              accentColor: Colors.deepOrangeAccent,
-//            ),
-//            darkTheme: ThemeData(
-//              brightness: Brightness.dark,
-//              primaryColor: Colors.deepPurple,
-//              accentColor: Colors.pinkAccent,
-//            ),
-//            themeMode: ThemeMode.dark,
-//            home: HomeScreen(
-//              cameras: cameras,
-//            ),
-//          );
-//        }
-//        return LoadingScreen();
-//      },
-//    );
   }
 }
