@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:preferences/preference_service.dart';
 
 const String NONE_CONST = "None";
 
@@ -168,6 +169,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _nameInput() {
+    Color col = Helper.getComplement(Theme.of(context).primaryColor);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TextFormField(
@@ -181,9 +183,8 @@ class _SearchScreenState extends State<SearchScreen> {
             color: Colors.red[100],
           ),
           labelText: "Item Name",
-          prefixIcon: Icon(Icons.search),
-          labelStyle:
-              TextStyle(color: Theme.of(context).textTheme.caption.color),
+          prefixIcon: Icon(Icons.search, color: col),
+          labelStyle: TextStyle(color: col),
         ),
         onChanged: (val) {
           setState(() {
@@ -285,9 +286,7 @@ class SearchHeader extends StatelessWidget {
                   fontWeight: FontWeight.w300,
                   fontSize: 18)),
         ),
-        const SizedBox(
-          width: 8,
-        )
+        const SizedBox(width: 8)
       ],
     );
   }
@@ -310,6 +309,8 @@ class InputSwiper extends StatefulWidget {
 class _InputSwiperState extends State<InputSwiper> {
   final SwiperController _controller = new SwiperController();
   int initIndex = 0;
+  final Color fCol =
+      Helper.getComplement(Color(PrefService.getInt('primary_col')));
 
   @override
   void initState() {
@@ -333,7 +334,8 @@ class _InputSwiperState extends State<InputSwiper> {
                 onTap: resetIndex,
                 child: Text(
                   widget.title,
-                  style: Theme.of(context).textTheme.caption,
+                  style:
+                      Theme.of(context).textTheme.caption.copyWith(color: fCol),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -359,7 +361,7 @@ class _InputSwiperState extends State<InputSwiper> {
                   scrollDirection: Axis.horizontal,
                   onIndexChanged: (int val) => widget.onUpdate(val),
                   itemBuilder: (BuildContext context, int index) {
-                    return _buildSwipeItem(index);
+                    return _buildSwipeItem(index, fCol: fCol);
                   }),
             ),
           ],
@@ -368,16 +370,19 @@ class _InputSwiperState extends State<InputSwiper> {
     );
   }
 
-  Widget _buildSwipeItem(int index) {
+  Widget _buildSwipeItem(int index, {Color fCol}) {
     String c;
     Color col = Colors.transparent;
-    Color fontCol;
+    Color fontCol = fCol;
     if (widget.itemList != null) {
       c = widget.itemList[index];
     } else {
       c = widget.itemMap.keys.toList()[index];
       col = widget.itemMap[c];
-      fontCol = col == Colors.white ? Colors.black : null;
+      fontCol = col == Colors.white
+          ? Colors.black
+          : Theme.of(context).textTheme.headline6.color;
+      fontCol = c == NONE_CONST ? fCol : fontCol;
       col = c == NONE_CONST ? null : col.withOpacity(0.8);
     }
 

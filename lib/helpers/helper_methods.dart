@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Outfitter/models/person.dart';
+import 'package:flutter/material.dart';
 
 class Helper {
   /// Get the current timestamp in milliseconds.
@@ -34,6 +35,12 @@ class Helper {
         .toList()
         .length
         .toString();
+  }
+
+  static Color getComplement(Color primary) {
+    return ThemeData.estimateBrightnessForColor(primary) == Brightness.light
+        ? Colors.black
+        : Colors.white;
   }
 
   static String capitalise(String s) {

@@ -1,5 +1,5 @@
-
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:Outfitter/pages/search_screen.dart';
@@ -11,6 +11,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:preferences/preference_service.dart';
 
 import '../constants/constants.dart';
 import 'add_item_screen.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Person person;
   int currentPage = 1;
   PageController controller;
+  Brightness brightness;
 
 //Add the following code inside the State of the StatefulWidget
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
@@ -64,6 +66,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     // set init screen as homepage.
     setScreen(SCREEN_MAP[1]);
+    brightness = ThemeData.estimateBrightnessForColor(
+        Color(PrefService.getInt('primary_col')));
   }
 
   void _showAd() async {
@@ -89,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
+    Color complement = Helper.getComplement(Theme.of(context).primaryColor);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         floatingActionButton: _getFAB(context),
@@ -112,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         bottomNavigationBar: ConvexAppBar(
             backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-            activeColor: Colors.white,
+            activeColor: complement,
+            color: complement,
             style: TabStyle.reactCircle,
             elevation: 3,
             top: currentPage == 0 ? 0 : -20,
@@ -197,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void setScreen(String s) {
     print("Going to $s");
     widget.analytics
-        .setCurrentScreen(screenName: s, screenClassOverride: s + "_class");
+        ?.setCurrentScreen(screenName: s, screenClassOverride: s + "_class");
   }
 }
 
