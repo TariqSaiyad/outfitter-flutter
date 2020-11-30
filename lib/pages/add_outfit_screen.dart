@@ -5,12 +5,15 @@ import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/add_outfit_screen_layout.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:Outfitter/widgets/selection_widget.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 class AddOutfitScreen extends StatefulWidget {
   final Person person;
+  final FirebaseAnalytics analytics;
 
-  const AddOutfitScreen({Key key, this.person}) : super(key: key);
+  const AddOutfitScreen({Key key, this.person, this.analytics})
+      : super(key: key);
 
   @override
   _AddOutfitScreenState createState() => _AddOutfitScreenState();
@@ -230,6 +233,8 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
     Outfit o = new Outfit(
         name, selectedAcc, selectedLayers, selectedLegwear, selectedShoes);
     widget.person.addOutfit(o);
+    //log event
+    widget.analytics.logEvent(name: 'add_outfit_event');
     //go back to outfit page.
     Navigator.pop(context);
   }

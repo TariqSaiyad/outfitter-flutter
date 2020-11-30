@@ -6,14 +6,17 @@ import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/add_item_form.dart';
 import 'package:camera/camera.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AddItemScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Person person;
+  final FirebaseAnalytics analytics;
 
-  const AddItemScreen({Key key, @required this.person, this.cameras})
+  const AddItemScreen(
+      {Key key, @required this.person, this.cameras, this.analytics})
       : super(key: key);
 
   @override
@@ -73,6 +76,8 @@ class _AddItemScreenState extends State<AddItemScreen>
   /// Add item to Person object when the form is complete.
   void onFormComplete(Item i) {
     widget.person.addItem(i);
+    widget.analytics
+        .logEvent(name: 'add_item_event', parameters: {'category': i.category});
     setState(() {
       isCamera = true;
       imagePath = null;
@@ -180,7 +185,8 @@ class _AddItemScreenState extends State<AddItemScreen>
   void goToImageView() {
     Navigator.push(
       context,
-      MaterialPageRoute(settings: RouteSettings(name: 'image_view_page'),
+      MaterialPageRoute(
+          settings: RouteSettings(name: 'image_view_page'),
           builder: (context) => ImageView(file: imagePath)),
     );
   }

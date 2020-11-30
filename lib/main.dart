@@ -35,7 +35,8 @@ Future<void> main() async {
   await PrefService.init(prefix: 'pref_');
   PrefService.setDefaultValues({
     'primary_col': Colors.deepPurple.value,
-    'accent_col': Colors.pinkAccent.value
+    'accent_col': Colors.pinkAccent.value,
+    'app_theme_bool': true
   });
   runApp(App());
 }
@@ -47,7 +48,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-      defaultBrightness: Brightness.dark,
+      defaultBrightness: PrefService.getBool("app_theme_bool")
+          ? Brightness.dark
+          : Brightness.light,
       data: (brightness) => ThemeData(
         brightness: brightness,
         primaryColor: Color(PrefService.getInt('primary_col')),
@@ -55,17 +58,25 @@ class App extends StatelessWidget {
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
-            title: 'Outfitter',
-            debugShowCheckedModeBanner: false,
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
-            ],
-            theme: theme,
-            themeMode: ThemeMode.dark,
-            home: HomeScreen(
-              cameras: cameras,
-              analytics: _firebaseAnalytics,
-            ));
+          title: 'Outfitter',
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+          ],
+          theme: theme,
+          themeMode: PrefService.getBool("app_theme_bool")
+              ? ThemeMode.dark
+              : ThemeMode.light,
+          routes: <String, WidgetBuilder>{
+            'home_page': (BuildContext context) {
+              return HomeScreen(
+                cameras: cameras,
+                analytics: _firebaseAnalytics,
+              );
+            }
+          },
+          initialRoute: 'home_page',
+        );
       },
     );
   }
