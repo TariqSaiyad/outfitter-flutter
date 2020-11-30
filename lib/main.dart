@@ -58,19 +58,25 @@ class App extends StatelessWidget {
       ),
       themedWidgetBuilder: (context, theme) {
         return MaterialApp(
-            title: 'Outfitter',
-            debugShowCheckedModeBanner: false,
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
-            ],
-            theme: theme,
-            themeMode: PrefService.getBool("app_theme_bool")
-                ? ThemeMode.dark
-                : ThemeMode.light,
-            home: HomeScreen(
-              cameras: cameras,
-              analytics: _firebaseAnalytics,
-            ));
+          title: 'Outfitter',
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+          ],
+          theme: theme,
+          themeMode: PrefService.getBool("app_theme_bool")
+              ? ThemeMode.dark
+              : ThemeMode.light,
+          routes: <String, WidgetBuilder>{
+            'home_page': (BuildContext context) {
+              return HomeScreen(
+                cameras: cameras,
+                analytics: _firebaseAnalytics,
+              );
+            }
+          },
+          initialRoute: 'home_page',
+        );
       },
     );
   }

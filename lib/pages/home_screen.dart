@@ -63,9 +63,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
-
-    // set init screen as homepage.
-    setScreen(SCREEN_MAP[1]);
     brightness = ThemeData.estimateBrightnessForColor(
         Color(PrefService.getInt('primary_col')));
   }
@@ -138,9 +135,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 controller: controller,
                 children: <Widget>[
                   AddItemScreen(
-                    cameras: widget.cameras,
-                    person: person,
-                  ),
+                      cameras: widget.cameras,
+                      person: person,
+                      analytics: widget.analytics),
                   ItemsScreen(person: person),
                   OutfitScreen(person: person),
                 ],
@@ -196,7 +193,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             context,
             MaterialPageRoute(
                 settings: RouteSettings(name: 'add_outfit_page'),
-                builder: (context) => AddOutfitScreen(person: person)))
+                builder: (context) => AddOutfitScreen(
+                    person: person, analytics: widget.analytics)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
