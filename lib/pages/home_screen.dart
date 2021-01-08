@@ -33,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   PageController controller;
   Brightness brightness;
 
+  /// True if the outfit page displaying the alt. view.
+  bool isAltOutfitView = false;
+
 //Add the following code inside the State of the StatefulWidget
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     keywords: <String>['clothing', 'outfits', 'jacket', 'footwear', 'shoes'],
@@ -104,10 +107,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
+            AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: currentPage == 2
+                    ? IconButton(
+                        tooltip: "Alternate View",
+                        icon: Icon(!isAltOutfitView
+                            ? Icons.swap_horiz
+                            : Icons.swap_horizontal_circle),
+                        onPressed: () {
+                          setState(() {
+                            isAltOutfitView = !isAltOutfitView;
+                          });
+                        })
+                    : const SizedBox()),
             IconButton(
+                tooltip: "Search Items",
                 icon: const Icon(Icons.search),
                 onPressed: () => _goToSearch(context)),
             IconButton(
+                tooltip: "Settings Page",
                 icon: const Icon(Icons.settings),
                 onPressed: () => _goToSettings(context))
           ],
@@ -139,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       person: person,
                       analytics: widget.analytics),
                   ItemsScreen(person: person),
-                  OutfitScreen(person: person),
+                  OutfitScreen(
+                      person: person, isAltOutfitView: isAltOutfitView),
                 ],
               );
             }
