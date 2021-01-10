@@ -7,9 +7,11 @@ import 'package:Outfitter/pages/settings_screen.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:camera/camera.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:preferences/preference_service.dart';
 
@@ -61,13 +63,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+//    resetPref();
 
     _showAd();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
-        () => setState(() => currentPage = controller.page.floor()));
+            () => setState(() => currentPage = controller.page.floor()));
     brightness = ThemeData.estimateBrightnessForColor(
         Color(PrefService.getInt('primary_col')));
+
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+      FeatureDiscovery.discoverFeatures(context, ['first_id']);
+    });
   }
 
   void _showAd() async {
@@ -77,6 +84,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await myInterstitial.load();
     myInterstitial.show();
   }
+
+//  void resetPref(BuildContext context) {
+//    FeatureDiscovery.hasPreviouslyCompleted(context, 'first_id')
+//        .then((value) => print(value));
+//    FeatureDiscovery.clearPreferences(context, ['first_id'])
+//        .then((value) => print("RESET!!!!"));
+//    FeatureDiscovery.discoverFeatures(context, ['first_id']);
+//
+//  }
 
   Future<bool> initData() {
     return Person.storage.ready.then((value) {
@@ -93,7 +109,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Color complement = Helper.getComplement(Theme.of(context).primaryColor);
+    Color complement = Helper.getComplement(Theme
+        .of(context)
+        .primaryColor);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         floatingActionButton: _getFAB(context),
@@ -104,22 +122,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           title: const Text(
             "OUTFITTER",
             style:
-                const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
+            const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
             AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 child: currentPage == 2
                     ? IconButton(
-                        tooltip: "Alternate View",
-                        icon: Icon(!isAltOutfitView
-                            ? Icons.swap_horiz
-                            : Icons.swap_horizontal_circle),
-                        onPressed: () {
-                          setState(() {
-                            isAltOutfitView = !isAltOutfitView;
-                          });
-                        })
+                    tooltip: "Alternate View",
+                    icon: Icon(!isAltOutfitView
+                        ? Icons.swap_horiz
+                        : Icons.swap_horizontal_circle),
+                    onPressed: () {
+                      setState(() {
+                        isAltOutfitView = !isAltOutfitView;
+                      });
+                    })
                     : const SizedBox()),
             IconButton(
                 tooltip: "Search Items",
@@ -128,11 +146,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             IconButton(
                 tooltip: "Settings Page",
                 icon: const Icon(Icons.settings),
-                onPressed: () => _goToSettings(context))
+                onPressed: () => _goToSettings(context)),
+//            IconButton(
+//                tooltip: "Settings Page",
+//                icon: const Icon(Icons.category),
+//                onPressed:()=> resetPref(context))
           ],
         ),
         bottomNavigationBar: ConvexAppBar(
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
+            backgroundColor: Theme
+                .of(context)
+                .primaryColor
+                .withOpacity(0.8),
             activeColor: complement,
             color: complement,
             style: TabStyle.reactCircle,
@@ -171,13 +196,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   FloatingActionButton _getFAB(BuildContext context) {
     return currentPage == 2
         ? FloatingActionButton.extended(
-            heroTag: null,
-            autofocus: true,
-            highlightElevation: 0,
-            splashColor: Theme.of(context).primaryColor,
-            onPressed: () => _goToAddOutfit(context),
-            label: Text("Add Outfit"),
-          )
+      heroTag: null,
+      autofocus: true,
+      highlightElevation: 0,
+      splashColor: Theme
+          .of(context)
+          .primaryColor,
+      onPressed: () => _goToAddOutfit(context),
+      label: Text("Add Outfit"),
+    )
         : null;
   }
 
@@ -190,30 +217,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _goToSettings(BuildContext context) {
     setScreen("settings_page");
     Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'settings_page'),
-                builder: (context) => SettingsScreen(setScreen: setScreen)))
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: 'settings_page'),
+            builder: (context) => SettingsScreen(setScreen: setScreen)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void _goToSearch(BuildContext context) {
     setScreen("search_page");
     Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'search_page'),
-                builder: (context) => SearchScreen(person: person)))
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: 'search_page'),
+            builder: (context) => SearchScreen(person: person)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void _goToAddOutfit(BuildContext context) {
     setScreen("add_outfit_page");
     Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'add_outfit_page'),
-                builder: (context) => AddOutfitScreen(
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: 'add_outfit_page'),
+            builder: (context) =>
+                AddOutfitScreen(
                     person: person, analytics: widget.analytics)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
@@ -237,15 +265,15 @@ class ItemsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Column(children: [
-      const SizedBox(height: 4),
-      for (var i in TYPES)
-        Expanded(
-          child: ItemTile(
-            person: person,
-            type: i,
-          ),
-        ),
-      const SizedBox(height: 4),
-    ]));
+          const SizedBox(height: 4),
+          for (var i in TYPES)
+            Expanded(
+              child: ItemTile(
+                person: person,
+                type: i,
+              ),
+            ),
+          const SizedBox(height: 4),
+        ]));
   }
 }

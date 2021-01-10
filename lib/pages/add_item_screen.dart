@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/person.dart';
+import 'package:Outfitter/services/firebase.dart';
 import 'package:Outfitter/widgets/add_item_form.dart';
 import 'package:camera/camera.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
@@ -75,6 +76,12 @@ class _AddItemScreenState extends State<AddItemScreen>
 
   /// Add item to Person object when the form is complete.
   void onFormComplete(Item i) {
+    //Add firebase.
+    FirebaseMethods f = new FirebaseMethods();
+
+    print("Adding...");
+    f.addItem(i).then((value) => print("added!!!!"));
+
     widget.person.addItem(i);
     widget.analytics
         .logEvent(name: 'add_item_event', parameters: {'category': i.category});

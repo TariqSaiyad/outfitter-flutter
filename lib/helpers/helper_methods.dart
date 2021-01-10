@@ -1,9 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/person.dart';
 import 'package:flutter/material.dart';
 
 class Helper {
+  /// Retrieve the item id based on its properties.
+  static String getItemID(Item i) {
+    return "${i.name}-${i.category}-${i.color}-${i.type}";
+  }
+
+  /// Convert the image file to a base64 representation.
+  static String imageToBase64(String filePath) {
+    return base64Encode(File(filePath).readAsBytesSync());
+  }
+
   /// Get the current timestamp in milliseconds.
   static String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 

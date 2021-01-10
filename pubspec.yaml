@@ -27,18 +27,20 @@ dependencies:
   firebase_performance: "^0.4.2"
   firebase_crashlytics: "^0.2.3"
   firebase_analytics: "^6.2.0"
+  cloud_firestore: "^0.14.4"
+  firebase_storage: "^5.2.0"
   firebase_admob: ^0.10.2
   localstorage: ^3.0.3+6
   json_annotation: ^3.0.0
   convex_bottom_bar: ^2.6.0
   camera: ^0.5.8+11
   draggable_bottom_sheet: ^0.1.1
-  search_page: ^1.3.0
   flutter_staggered_animations: "^0.1.2"
   flutter_swiper: ^1.1.6
   direct_select_flutter: ^1.0.6
   preferences: ^5.2.0
   dynamic_theme: ^1.0.1
+  feature_discovery: ^0.13.0
   flutter_material_color_picker: ^1.0.5
   url_launcher: ^5.7.10
 
