@@ -118,9 +118,7 @@ class OutfitTile extends StatelessWidget {
                   .copyWith(letterSpacing: 1.4),
             ),
             InkWell(
-              onTap: () {
-                _confirmDeleteDialog(context, o);
-              },
+              onTap: () => _confirmDeleteDialog(context, o),
               splashColor: Colors.white,
               child: const Icon(
                 Icons.delete,
@@ -129,14 +127,10 @@ class OutfitTile extends StatelessWidget {
             )
           ],
         ),
-        Divider(
-          color: Theme.of(context).accentColor,
-          thickness: 1,
-          height: 12,
-        ),
+        Divider(color: Theme.of(context).accentColor, thickness: 1, height: 12),
         Expanded(
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 400),
             child: altView ? _buildAlt() : _buildDefault(),
           ),
         ),

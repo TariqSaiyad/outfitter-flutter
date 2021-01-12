@@ -130,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   ListTile _colorTile(BuildContext context, String key) {
-    String title = key == "primary_col" ? "Primary Color" : "Accent Color";
+    String title = key == "primary_col" ? "Primary Colour" : "Accent Colour";
     return ListTile(
       trailing: PrefService.getInt(key) != null
           ? CircleColor(

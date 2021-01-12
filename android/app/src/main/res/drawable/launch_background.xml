@@ -5,9 +5,12 @@
     <item android:drawable="@color/menu_background"/>
 
     <!-- You can insert your own image assets here -->
-    <item>
+    <item
+        android:height="320dp"
+        android:width="320dp"
+        android:gravity="right|center_vertical"
+        >
         <bitmap
-            android:gravity="center"
-            android:src="@drawable/icon" />
+            android:src="@drawable/logonew" />
     </item>
 </layer-list>

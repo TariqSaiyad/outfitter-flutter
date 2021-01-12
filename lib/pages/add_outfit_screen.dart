@@ -49,9 +49,9 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
         controller: controller,
         children: [
           AddOutfitScreenLayout(
-            title: "Set a name for your new outfit",
+            title: "Give your outfit a name",
             subtitle:
-                "Hint: Keep it short to easily remember and search for the outfit later",
+                "Hint: Keep it short and easy to remember",
             pageIndex: current,
             hasBackButton: true,
             rightFn: name != ""
@@ -65,7 +65,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
           AddOutfitScreenLayout(
             title: "Select some layers",
             pageIndex: current,
-            subtitle: "Hint: You can select 1-4 of these",
+            subtitle: "Hint: You can select 1-$MAX_LAYERS of these",
             leftFn: goToPrevious,
             rightFn: selectedLayers.length == 0 ? null : goToNext,
             widget: SelectionWidget(
@@ -101,7 +101,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
           ),
           AddOutfitScreenLayout(
             title: "Select some accessories",
-            subtitle: "Almost there. Hint: You can select 0-4 of these",
+            subtitle: "Almost there. Hint: You can select 0-$MAX_ACCESSORIES of these",
             pageIndex: current,
             leftFn: goToPrevious,
             rightFn: saveOutfit,
