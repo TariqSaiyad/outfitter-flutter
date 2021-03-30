@@ -7,8 +7,8 @@ part 'outfit.g.dart';
 @JsonSerializable(nullable: false)
 class Outfit {
   String name;
-  List<Item> accessories = new List();
-  List<Item> layers = new List();
+  List<Item> accessories = [];
+  List<Item> layers = [];
   Item pants;
   Item shoes;
 

@@ -21,16 +21,16 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Item> items = new List();
+  List<Item> items = [];
   String query = "";
   String category = "";
   String color = "";
   String type = "";
   String code = "";
 
-  List<String> categoryList = new List();
-  List<String> typeList = new List();
-  List<String> codeList = new List();
+  List<String> categoryList = [];
+  List<String> typeList = [];
+  List<String> codeList = [];
   Map<String, Color> colorList = new Map();
 
   ScrollController _scrollController;

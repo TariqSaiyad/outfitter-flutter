@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
@@ -23,14 +23,12 @@ FirebaseAnalytics _firebaseAnalytics;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   // init firebase stuff
   await Firebase.initializeApp();
   print(_firebasePerformance.toString());
   cameras = await availableCameras();
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  await FirebaseAdMob.instance
-      .initialize(appId: "ca-app-pub-6887785718682987~8592633287");
 
   _firebaseAnalytics = FirebaseAnalytics();
   await PrefService.init(prefix: 'pref_');
@@ -49,7 +47,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-      defaultBrightness: PrefService.getBool("app_theme_bool")
+      defaultBrightness: PrefService.getBool('app_theme_bool')
           ? Brightness.dark
           : Brightness.light,
       data: (brightness) => ThemeData(
@@ -59,7 +57,6 @@ class App extends StatelessWidget {
       ),
       themedWidgetBuilder: (context, theme) {
         return FeatureDiscovery(
-
           child: MaterialApp(
             title: 'Outfitter',
             debugShowCheckedModeBanner: false,

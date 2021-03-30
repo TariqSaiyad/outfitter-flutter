@@ -8,11 +8,11 @@ import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:camera/camera.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:preferences/preference_service.dart';
 
 import '../constants/constants.dart';
@@ -37,21 +37,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// True if the outfit page displaying the alt. view.
   bool isAltOutfitView = false;
-
-//Add the following code inside the State of the StatefulWidget
-  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    keywords: <String>['clothing', 'outfits', 'jacket', 'footwear', 'shoes'],
-    childDirected: false,
-    testDevices: <String>[],
+  final BannerAd myBanner = BannerAd(
+    adUnitId: BannerAd.testAdUnitId,
+    size: AdSize.fullBanner,
+    request: AdRequest(),
+    listener: AdListener(),
   );
 
   InterstitialAd myInterstitial = InterstitialAd(
-    adUnitId: "ca-app-pub-6887785718682987/3507634048",
-//  adUnitId: InterstitialAd.testAdUnitId,
-    targetingInfo: targetingInfo,
-    listener: (MobileAdEvent event) {
-      print("InterstitialAd event is $event");
-    },
+    // adUnitId: "ca-app-pub-6887785718682987/3507634048",
+    adUnitId: InterstitialAd.testAdUnitId,
+    listener: AdListener(
+      onAdLoaded: (Ad ad) => print("LOADED"),
+      // Called when an ad request failed.
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      // Called when an ad opens an overlay that covers the screen.
+      onAdOpened: (Ad ad) => print('Ad opened.'),
+      // Called when an ad removes an overlay that covers the screen.
+      onAdClosed: (Ad ad) => print('Ad closed.'),
+      // Called when an ad is in the process of leaving the application.
+      onApplicationExit: (Ad ad) => print('Left application.'),
+    ),
+    request: AdRequest(keywords: <String>[
+      'clothing',
+      'outfits',
+      'jacket',
+      'footwear',
+      'shoes'
+    ]),
   );
 
   @override
@@ -68,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _showAd();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
-            () => setState(() => currentPage = controller.page.floor()));
+        () => setState(() => currentPage = controller.page.floor()));
     brightness = ThemeData.estimateBrightnessForColor(
         Color(PrefService.getInt('primary_col')));
 
@@ -82,7 +98,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 //    Random rand = new Random();
 //    if (rand.nextBool()) return;
     await myInterstitial.load();
-    myInterstitial.show();
+    // myInterstitial.show();
+    await myBanner.load();
   }
 
 //  void resetPref(BuildContext context) {
@@ -109,9 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Color complement = Helper.getComplement(Theme
-        .of(context)
-        .primaryColor);
+    Color complement = Helper.getComplement(Theme.of(context).primaryColor);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         floatingActionButton: _getFAB(context),
@@ -122,22 +137,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           title: const Text(
             "OUTFITTER",
             style:
-            const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
+                const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
           ),
           actions: [
             AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 child: currentPage == 2
                     ? IconButton(
-                    tooltip: "Alternate View",
-                    icon: Icon(!isAltOutfitView
-                        ? Icons.swap_horiz
-                        : Icons.swap_horizontal_circle),
-                    onPressed: () {
-                      setState(() {
-                        isAltOutfitView = !isAltOutfitView;
-                      });
-                    })
+                        tooltip: "Alternate View",
+                        icon: Icon(!isAltOutfitView
+                            ? Icons.swap_horiz
+                            : Icons.swap_horizontal_circle),
+                        onPressed: () {
+                          setState(() {
+                            isAltOutfitView = !isAltOutfitView;
+                          });
+                        })
                     : const SizedBox()),
             IconButton(
                 tooltip: "Search Items",
@@ -154,10 +169,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
         bottomNavigationBar: ConvexAppBar(
-            backgroundColor: Theme
-                .of(context)
-                .primaryColor
-                .withOpacity(0.8),
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
             activeColor: complement,
             color: complement,
             style: TabStyle.reactCircle,
@@ -182,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       cameras: widget.cameras,
                       person: person,
                       analytics: widget.analytics),
-                  ItemsScreen(person: person),
+                  ItemsScreen(person: person, banner: myBanner),
                   OutfitScreen(
                       person: person, isAltOutfitView: isAltOutfitView),
                 ],
@@ -196,15 +208,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   FloatingActionButton _getFAB(BuildContext context) {
     return currentPage == 2
         ? FloatingActionButton.extended(
-      heroTag: null,
-      autofocus: true,
-      highlightElevation: 0,
-      splashColor: Theme
-          .of(context)
-          .primaryColor,
-      onPressed: () => _goToAddOutfit(context),
-      label: Text("Add Outfit"),
-    )
+            heroTag: null,
+            autofocus: true,
+            highlightElevation: 0,
+            splashColor: Theme.of(context).primaryColor,
+            onPressed: () => _goToAddOutfit(context),
+            label: Text("Add Outfit"),
+          )
         : null;
   }
 
@@ -217,31 +227,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _goToSettings(BuildContext context) {
     setScreen("settings_page");
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: 'settings_page'),
-            builder: (context) => SettingsScreen(setScreen: setScreen)))
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'settings_page'),
+                builder: (context) => SettingsScreen(setScreen: setScreen)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void _goToSearch(BuildContext context) {
     setScreen("search_page");
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: 'search_page'),
-            builder: (context) => SearchScreen(person: person)))
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'search_page'),
+                builder: (context) => SearchScreen(person: person)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
   void _goToAddOutfit(BuildContext context) {
     setScreen("add_outfit_page");
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            settings: RouteSettings(name: 'add_outfit_page'),
-            builder: (context) =>
-                AddOutfitScreen(
+            context,
+            MaterialPageRoute(
+                settings: RouteSettings(name: 'add_outfit_page'),
+                builder: (context) => AddOutfitScreen(
                     person: person, analytics: widget.analytics)))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
@@ -257,23 +266,26 @@ class ItemsScreen extends StatelessWidget {
   const ItemsScreen({
     Key key,
     @required this.person,
+    this.banner,
   }) : super(key: key);
 
   final Person person;
+  final BannerAd banner;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Column(children: [
-          const SizedBox(height: 4),
-          for (var i in TYPES)
-            Expanded(
-              child: ItemTile(
-                person: person,
-                type: i,
-              ),
-            ),
-          const SizedBox(height: 4),
-        ]));
+      const SizedBox(height: 4),
+      for (var i in TYPES)
+        Expanded(
+          child: ItemTile(
+            person: person,
+            type: i,
+          ),
+        ),
+      Expanded(child: AdWidget(ad: banner)),
+      const SizedBox(height: 4),
+    ]));
   }
 }

@@ -8,10 +8,10 @@ part 'person.g.dart';
 
 @JsonSerializable(nullable: false)
 class Person {
-  static final LocalStorage storage = new LocalStorage('personData.json');
+  static final LocalStorage storage = LocalStorage('personData.json');
   final List<Item> items;
   final List<Outfit> outfits;
-  Map<String, int> itemCounts = new Map();
+  Map<String, int> itemCounts = {};
 
   Person({this.items, this.outfits});
 
@@ -22,19 +22,17 @@ class Person {
     // get data from local storage.
     dynamic data = storage.getItem('person');
     // create the person object.
-    Person p = data == null
-        ? Person(items: new List(), outfits: new List())
-        : Person.fromJson(data);
-
+    var p =
+        data == null ? Person(items: [], outfits: []) : Person.fromJson(data);
     //update the map for the item counts.
     p.updateItemCounts(p);
     return p;
   }
 
   void updateItemCounts(Person p) {
-    p.itemCounts = new Map();
+    p.itemCounts = {};
     p.items.forEach((element) {
-      String cat = element.category.toLowerCase();
+      var cat = element.category.toLowerCase();
       p.itemCounts[cat] = p.itemCounts[cat] != null ? p.itemCounts[cat] + 1 : 1;
     });
 
@@ -48,13 +46,13 @@ class Person {
     // add to item list.
     items.add(i);
     // update local storage.
-    storage.setItem('person', this.toJson());
+    storage.setItem('person', toJson());
     // update the item category count.
-    String cat = i.category.toLowerCase();
-    this.itemCounts[cat] = this.itemCounts[cat] + 1;
+    var cat = i.category.toLowerCase();
+    itemCounts[cat] = itemCounts[cat] + 1;
 //    updateItemCounts(this);
     print("item ${i.name} ADDED!");
-    print(this.toJson());
+    print(toJson());
   }
 
   //  void addItem(
@@ -75,19 +73,19 @@ class Person {
     if (!items.contains(i)) return false;
 //    items.remove(i);
 //    storage.setItem('person', this.toJson());
-    print(this.itemCounts);
-    String cat = i.category.toLowerCase();
-    this.itemCounts[cat] = this.itemCounts[cat] - 1;
+    print(itemCounts);
+    var cat = i.category.toLowerCase();
+    itemCounts[cat] = itemCounts[cat] - 1;
 //    updateItemCounts(this);
     print("REMOVED");
-    print(this.toJson());
+    print(toJson());
     return true;
   }
 
   /// Add a new outfit to the Person object, re-serialise.
   void addOutfit(Outfit o) {
     outfits.add(o);
-    storage.setItem('person', this.toJson());
+    storage.setItem('person', toJson());
     print("Outfit ${o.name} ADDED!");
   }
 
@@ -102,7 +100,7 @@ class Person {
   bool removeOutfit(Outfit o) {
     if (!outfits.contains(o)) return false;
     outfits.remove(o);
-    storage.setItem('person', this.toJson());
+    storage.setItem('person', toJson());
     return true;
   }
 
@@ -111,7 +109,8 @@ class Person {
     return itemCounts[category] ?? 0;
   }
 
+  @override
   String toString() {
-    return this.toJson().toString();
+    return toJson().toString();
   }
 }

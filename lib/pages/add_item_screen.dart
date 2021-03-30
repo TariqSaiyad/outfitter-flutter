@@ -77,11 +77,11 @@ class _AddItemScreenState extends State<AddItemScreen>
   /// Add item to Person object when the form is complete.
   void onFormComplete(Item i) {
     //Add firebase.
-    FirebaseMethods f = new FirebaseMethods();
-
+    var f = FirebaseMethods();
     print("Adding...");
     f.addItem(i).then((value) => print("added!!!!"));
 
+    // add to person object
     widget.person.addItem(i);
     widget.analytics
         .logEvent(name: 'add_item_event', parameters: {'category': i.category});
@@ -175,13 +175,13 @@ class _AddItemScreenState extends State<AddItemScreen>
                   padding: const EdgeInsets.all(8.0),
                   child: FloatingActionButton(
                     tooltip: "Redo photo",
-                    child: Icon(Icons.undo),
                     onPressed: () {
                       Helper.deleteFile(imagePath);
                       setState(() {
                         isCamera = !isCamera;
                       });
                     },
+                    child: Icon(Icons.undo),
                   ),
                 ),
               )
@@ -219,10 +219,10 @@ class _AddItemScreenState extends State<AddItemScreen>
       showInSnackBar('Error: select a camera first.');
       return null;
     }
-    final Directory extDir = await getExternalStorageDirectory();
-    final String dirPath = '${extDir.path}/items';
+    final extDir = await getExternalStorageDirectory();
+    final dirPath = '${extDir.path}/items';
     await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${Helper.timestamp()}.jpg';
+    final filePath = '$dirPath/${Helper.timestamp()}.jpg';
     // A capture is already pending, do nothing.
     if (controller.value.isTakingPicture) return null;
     try {

@@ -40,7 +40,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgetList = new List<Widget>();
+    List<Widget> widgetList = [];
     int count = 0;
     for (var cat in catToItems.keys.toList()) {
       List<Item> tmp = catToItems[cat];

@@ -24,8 +24,8 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
   final _key = GlobalKey<ScaffoldState>();
   int current = 0;
   String name = "";
-  List<Item> selectedLayers = new List();
-  List<Item> selectedAcc = new List();
+  List<Item> selectedLayers = [];
+  List<Item> selectedAcc = [];
   Item selectedLegwear;
   Item selectedShoes;
 
@@ -50,8 +50,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
         children: [
           AddOutfitScreenLayout(
             title: "Give your outfit a name",
-            subtitle:
-                "Hint: Keep it short and easy to remember",
+            subtitle: "Hint: Keep it short and easy to remember",
             pageIndex: current,
             hasBackButton: true,
             rightFn: name != ""
@@ -101,7 +100,8 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
           ),
           AddOutfitScreenLayout(
             title: "Select some accessories",
-            subtitle: "Almost there. Hint: You can select 0-$MAX_ACCESSORIES of these",
+            subtitle:
+                "Almost there. Hint: You can select 0-$MAX_ACCESSORIES of these",
             pageIndex: current,
             leftFn: goToPrevious,
             rightFn: saveOutfit,

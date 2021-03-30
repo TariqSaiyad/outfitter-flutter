@@ -201,7 +201,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildCategoryList() {
-    List<DropdownMenuItem<String>> items = List();
+    List<DropdownMenuItem<String>> items = [];
     for (String i in CATEGORY_LIST) {
       items.add(
         DropdownMenuItem(
@@ -214,7 +214,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildCodeList() {
-    List<DropdownMenuItem<String>> items = List();
+    List<DropdownMenuItem<String>> items = [];
     for (String i in DRESS_CODES) {
       items.add(
         DropdownMenuItem(
@@ -227,7 +227,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildTypeList() {
-    List<DropdownMenuItem<String>> items = List();
+    List<DropdownMenuItem<String>> items =[];
     for (String i in CLOTHING_TYPES) {
       items.add(
         DropdownMenuItem(
@@ -240,7 +240,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildColorList() {
-    List<DropdownMenuItem<String>> items = List();
+    List<DropdownMenuItem<String>> items = [];
     for (String i in COLORS_LIST.keys) {
       items.add(
         DropdownMenuItem(
