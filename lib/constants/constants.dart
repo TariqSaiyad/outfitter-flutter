@@ -60,3 +60,7 @@ const List CLOTHING_TYPES = ["Warm", "Cool", "Neutral", "Weatherproof"];
 
 const int MAX_ACCESSORIES = 4;
 const int MAX_LAYERS = 2;
+
+const FEATURES = [
+  'first_id',
+];

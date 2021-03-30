@@ -159,7 +159,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
     return DropDownWidget(
         child: DropdownButtonFormField(
             decoration: InputDecoration(
-                enabledBorder: InputBorder.none, labelText: 'Color'),
+                enabledBorder: InputBorder.none, labelText: 'Colour'),
             items: _dropdownColorItems,
             value: color,
             onSaved: (value) => color = value,

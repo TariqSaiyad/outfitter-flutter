@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -57,25 +58,28 @@ class App extends StatelessWidget {
         accentColor: Color(PrefService.getInt('accent_col')),
       ),
       themedWidgetBuilder: (context, theme) {
-        return MaterialApp(
-          title: 'Outfitter',
-          debugShowCheckedModeBanner: false,
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
-          ],
-          theme: theme,
-          themeMode: PrefService.getBool("app_theme_bool")
-              ? ThemeMode.dark
-              : ThemeMode.light,
-          routes: <String, WidgetBuilder>{
-            'home_page': (BuildContext context) {
-              return HomeScreen(
-                cameras: cameras,
-                analytics: _firebaseAnalytics,
-              );
-            }
-          },
-          initialRoute: 'home_page',
+        return FeatureDiscovery(
+
+          child: MaterialApp(
+            title: 'Outfitter',
+            debugShowCheckedModeBanner: false,
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+            ],
+            theme: theme,
+            themeMode: PrefService.getBool("app_theme_bool")
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            routes: <String, WidgetBuilder>{
+              'home_page': (BuildContext context) {
+                return HomeScreen(
+                  cameras: cameras,
+                  analytics: _firebaseAnalytics,
+                );
+              }
+            },
+            initialRoute: 'home_page',
+          ),
         );
       },
     );

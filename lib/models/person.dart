@@ -45,9 +45,14 @@ class Person {
 
   // Add item to the Person object and re-serialize and update storage.
   void addItem(Item i) {
+    // add to item list.
     items.add(i);
+    // update local storage.
     storage.setItem('person', this.toJson());
-    updateItemCounts(this);
+    // update the item category count.
+    String cat = i.category.toLowerCase();
+    this.itemCounts[cat] = this.itemCounts[cat] + 1;
+//    updateItemCounts(this);
     print("item ${i.name} ADDED!");
     print(this.toJson());
   }
@@ -68,9 +73,12 @@ class Person {
   /// Returns true if the item is removed successfully.
   bool removeItem(Item i) {
     if (!items.contains(i)) return false;
-    items.remove(i);
-    storage.setItem('person', this.toJson());
-    updateItemCounts(this);
+//    items.remove(i);
+//    storage.setItem('person', this.toJson());
+    print(this.itemCounts);
+    String cat = i.category.toLowerCase();
+    this.itemCounts[cat] = this.itemCounts[cat] - 1;
+//    updateItemCounts(this);
     print("REMOVED");
     print(this.toJson());
     return true;
