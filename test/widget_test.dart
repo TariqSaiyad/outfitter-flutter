@@ -6,7 +6,6 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:Outfitter/constants/constants.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,10 +14,7 @@ void main() {
   testWidgets('Test all categories present', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    await tester.pumpWidget(MaterialApp(
-        home: ItemsScreen(
-      person: new Person(),
-    )));
+    await tester.pumpWidget(MaterialApp(home: ItemsScreen()));
 
     // Verify that each of the category items are displayed.
     for (var type in TYPES) {

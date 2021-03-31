@@ -1,3 +1,4 @@
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:camera/camera.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:feature_discovery/feature_discovery.dart';
@@ -9,6 +10,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:preferences/preferences.dart';
 
 import 'pages/home_screen.dart';
@@ -24,6 +27,12 @@ FirebaseAnalytics _firebaseAnalytics;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
+
+  //Hive stuff
+  await Hive.initFlutter();
+  HiveHelpers.registerAdapters();
+  await HiveHelpers.openBoxes();
+
   // init firebase stuff
   await Firebase.initializeApp();
   print(_firebasePerformance.toString());

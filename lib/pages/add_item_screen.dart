@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:Outfitter/helpers/helper_methods.dart';
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/services/firebase.dart';
 import 'package:Outfitter/widgets/add_item_form.dart';
 import 'package:camera/camera.dart';
@@ -13,11 +13,9 @@ import 'package:path_provider/path_provider.dart';
 
 class AddItemScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
-  final Person person;
   final FirebaseAnalytics analytics;
 
-  const AddItemScreen(
-      {Key key, @required this.person, this.cameras, this.analytics})
+  const AddItemScreen({Key key, this.cameras, this.analytics})
       : super(key: key);
 
   @override
@@ -74,15 +72,15 @@ class _AddItemScreenState extends State<AddItemScreen>
     }
   }
 
-  /// Add item to Person object when the form is complete.
+  /// Add item when the form is complete.
   void onFormComplete(Item i) {
     //Add firebase.
     var f = FirebaseMethods();
     print("Adding...");
     f.addItem(i).then((value) => print("added!!!!"));
 
-    // add to person object
-    widget.person.addItem(i);
+    // add to items box
+    HiveHelpers.addItem(i);
     widget.analytics
         .logEvent(name: 'add_item_event', parameters: {'category': i.category});
     setState(() {

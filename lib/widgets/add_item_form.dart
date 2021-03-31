@@ -16,10 +16,10 @@ class AddItemFormWidget extends StatefulWidget {
 }
 
 class _AddItemFormWidgetState extends State<AddItemFormWidget> {
-  EdgeInsetsGeometry _fieldPadding =
+  final EdgeInsetsGeometry _fieldPadding =
       EdgeInsets.symmetric(horizontal: 16.0, vertical: 8);
 
-  final _formKey = new GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   List<DropdownMenuItem<String>> _dropdownCategoryItems;
   List<DropdownMenuItem<String>> _dropdownColorItems;
@@ -31,6 +31,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   String code = "";
   String type = "";
 
+  @override
   void initState() {
     super.initState();
     _dropdownCategoryItems = _buildCategoryList();
@@ -45,7 +46,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
 
   // Save the form inputs
   bool validateAndSave() {
-    final FormState form = _formKey.currentState;
+    final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
       return true;
@@ -59,7 +60,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
     if (validateAndSave()) {
       FocusScope.of(context).unfocus();
       //Create item and add it using callback. Reset form afterwards.
-      Item i = new Item(widget.image, name, type, code, color, category);
+      var i = Item(widget.image, name, type, code, color, category);
       widget.onFormComplete(i);
       _formKey.currentState.reset();
     }
@@ -90,6 +91,11 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
                 elevation: 4,
                 color: Theme.of(context).primaryColor,
                 splashColor: Theme.of(context).accentColor,
+                onPressed: (_formKey != null &&
+                        _formKey.currentState != null &&
+                        _formKey.currentState.validate())
+                    ? () => validateAndSubmit(context)
+                    : null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -101,11 +107,6 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
                     const Icon(Icons.check)
                   ],
                 ),
-                onPressed: (_formKey != null &&
-                        _formKey.currentState != null &&
-                        _formKey.currentState.validate())
-                    ? () => validateAndSubmit(context)
-                    : null,
               ),
             )
           ],
@@ -123,7 +124,6 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
         },
         autofocus: false,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-
         maxLines: 1,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
@@ -201,12 +201,12 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildCategoryList() {
-    List<DropdownMenuItem<String>> items = [];
-    for (String i in CATEGORY_LIST) {
+    var items = <DropdownMenuItem<String>>[];
+    for (var i in CATEGORY_LIST) {
       items.add(
         DropdownMenuItem(
-          child: Text(i),
           value: i,
+          child: Text(i),
         ),
       );
     }
@@ -214,12 +214,12 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildCodeList() {
-    List<DropdownMenuItem<String>> items = [];
+    var items = <DropdownMenuItem<String>>[];
     for (String i in DRESS_CODES) {
       items.add(
         DropdownMenuItem(
-          child: Text(i),
           value: i,
+          child: Text(i),
         ),
       );
     }
@@ -227,12 +227,12 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildTypeList() {
-    List<DropdownMenuItem<String>> items =[];
+    var items = <DropdownMenuItem<String>>[];
     for (String i in CLOTHING_TYPES) {
       items.add(
         DropdownMenuItem(
-          child: Text(i),
           value: i,
+          child: Text(i),
         ),
       );
     }
@@ -240,10 +240,11 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   }
 
   List<DropdownMenuItem<String>> _buildColorList() {
-    List<DropdownMenuItem<String>> items = [];
+    var items = <DropdownMenuItem<String>>[];
     for (String i in COLORS_LIST.keys) {
       items.add(
         DropdownMenuItem(
+          value: i,
           child: Row(
             children: [
               CircleAvatar(maxRadius: 15, backgroundColor: COLORS_LIST[i]),
@@ -251,7 +252,6 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
               Text(Helper.capitalise(i))
             ],
           ),
-          value: i,
         ),
       );
     }

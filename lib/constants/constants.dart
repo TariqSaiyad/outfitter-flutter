@@ -64,3 +64,11 @@ const int MAX_LAYERS = 2;
 const FEATURES = [
   'first_id',
 ];
+
+class HiveBoxes {
+  HiveBoxes._();
+
+  static const String items = 'favorites';
+  static const String outfits = 'searches';
+  static const String itemCounts = 'itemCounts';
+}

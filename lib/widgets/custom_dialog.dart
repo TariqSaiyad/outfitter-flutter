@@ -31,9 +31,7 @@ class _CustomDialogState extends State<CustomDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       children: <Widget>[
         Container(
-          margin: widget.margin != null
-              ? widget.margin
-              : const EdgeInsets.symmetric(horizontal: 16),
+          margin: widget.margin ?? const EdgeInsets.symmetric(horizontal: 16),
           child: Stack(
             children: <Widget>[
               Card(
@@ -54,9 +52,7 @@ class _CustomDialogState extends State<CustomDialog> {
                     ),
 //                    width: MediaQuery.of(context).size.width * 0.7,
                     child: Padding(
-                      padding: widget.padding != null
-                          ? widget.padding
-                          : const EdgeInsets.symmetric(vertical: 40),
+                      padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 40),
                       child: widget.content,
                     ),
                   )),
@@ -88,9 +84,7 @@ class _CustomDialogState extends State<CustomDialog> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           elevation: 10,
-          color: widget.titleColor != null
-              ? widget.titleColor
-              : Theme.of(context).primaryColor,
+          color: widget.titleColor ?? Theme.of(context).primaryColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Text(

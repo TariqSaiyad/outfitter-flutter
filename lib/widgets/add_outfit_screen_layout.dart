@@ -83,7 +83,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: FloatingActionButton(
                             heroTag: null,
-                            backgroundColor: leftCol ?? null,
+                            backgroundColor: leftCol,
                             splashColor: Theme.of(context).primaryColor,
                             onPressed: leftFn,
                             child: leftIcon ?? const Icon(Icons.chevron_left),
@@ -100,7 +100,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: FloatingActionButton(
                             heroTag: null,
-                            backgroundColor: rightCol ?? null,
+                            backgroundColor: rightCol,
                             splashColor: Theme.of(context).primaryColor,
                             onPressed: rightFn,
                             child: rightIcon ?? const Icon(Icons.chevron_right),

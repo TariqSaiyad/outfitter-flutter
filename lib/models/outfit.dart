@@ -1,22 +1,36 @@
+import 'package:Outfitter/constants/constants.dart';
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'item.dart';
 
 part 'outfit.g.dart';
 
-@JsonSerializable(nullable: false)
-class Outfit {
+@HiveType(typeId: 2)
+class Outfit extends HiveObject {
+  @HiveField(0)
   String name;
-  List<Item> accessories = [];
-  List<Item> layers = [];
+  @HiveField(1)
+  HiveList<Item> accessories;
+  @HiveField(2)
+  HiveList<Item> layers;
+  @HiveField(3)
   Item pants;
+  @HiveField(4)
   Item shoes;
 
-  Outfit(this.name, this.accessories, this.layers, this.pants, this.shoes);
+  Outfit(this.name, List<Item> accessories, List<Item> layers, this.pants,
+      this.shoes) {
+    this.accessories = HiveList(Hive.box<Item>(HiveBoxes.items));
+    this.accessories.addAll(accessories);
 
-  factory Outfit.fromJson(Map<String, dynamic> json) => _$OutfitFromJson(json);
+    this.layers = HiveList(Hive.box<Item>(HiveBoxes.items));
+    this.layers.addAll(layers);
+  }
 
-  Map<String, dynamic> toJson() => _$OutfitToJson(this);
+  // factory Outfit.fromJson(Map<String, dynamic> json) => _$OutfitFromJson(json);
+
+  // Map<String, dynamic> toJson() => _$OutfitToJson(this);
 
   @override
   bool operator ==(Object other) =>

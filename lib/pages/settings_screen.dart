@@ -23,11 +23,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _launchURL() async {
-    final Uri params = Uri(
+    final params = Uri(
       scheme: 'mailto',
       path: 'tariqsaiyad98@gmail.com',
     );
-    String url = params.toString();
+    var url = params.toString();
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -74,12 +74,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 switchActiveColor: Color(PrefService.getInt('primary_col')),
               ),
               MaterialButton(
-                  padding: const EdgeInsets.all(8),
-                  child: const Text(
-                    "ABOUT APP",
-                    style: const TextStyle(letterSpacing: 1.5),
-                  ),
-                  onPressed: _showAboutDialog)
+                padding: const EdgeInsets.all(8),
+                onPressed: _showAboutDialog,
+                child: const Text(
+                  "ABOUT APP",
+                  style: const TextStyle(letterSpacing: 1.5),
+                ),
+              )
             ]))
           ],
         ),
@@ -130,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   ListTile _colorTile(BuildContext context, String key) {
-    String title = key == "primary_col" ? "Primary Colour" : "Accent Colour";
+    var title = key == "primary_col" ? "Primary Colour" : "Accent Colour";
     return ListTile(
       trailing: PrefService.getInt(key) != null
           ? CircleColor(
@@ -167,12 +168,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           content: content,
           actions: [
             FlatButton(
-              child: const Text('CANCEL'),
               onPressed: Navigator.of(context).pop,
+              child: const Text('CANCEL'),
             ),
             FlatButton(
-              child: const Text('SUBMIT'),
               onPressed: () => _setColor(key),
+              child: const Text('SUBMIT'),
             ),
           ],
         );

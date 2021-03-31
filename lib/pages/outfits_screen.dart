@@ -1,14 +1,13 @@
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/custom_dialog.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class OutfitScreen extends StatefulWidget {
-  OutfitScreen({this.person, this.isAltOutfitView});
+  OutfitScreen({this.isAltOutfitView});
 
-  final Person person;
   final bool isAltOutfitView;
 
   @override
@@ -16,30 +15,35 @@ class OutfitScreen extends StatefulWidget {
 }
 
 class _OutfitScreenState extends State<OutfitScreen> {
+  List<Outfit> outfits;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    outfits = HiveHelpers.getAllOutfits();
+  }
+
   void onRemove(Outfit o) {
-    widget.person.removeOutfit(o);
+    HiveHelpers.removeOutfit(o);
     setState(() {});
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-//    widget.person.outfits.forEach((element) {
-//      print(element.toJson());
-//    });
-
     return SafeArea(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: widget.person.outfits.length == 0
-              ? const Center(child: Text("NO OUTFITS"))
+          child: outfits.isEmpty
+              ? const Center(child: const Text("NO OUTFITS"))
               : Scrollbar(
                   radius: const Radius.circular(8),
                   thickness: 4,
                   child: ListView(
                     itemExtent: (MediaQuery.of(context).size.width / 2) + 8,
                     children: [
-                      for (Outfit o in widget.person.outfits)
+                      for (Outfit o in outfits)
                         OutfitTile(
                             o: o,
                             onRemove: onRemove,
@@ -80,20 +84,20 @@ class OutfitTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 MaterialButton(
-                  child: const Text("Cancel"),
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   color: Colors.grey,
                   onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
                 ),
                 MaterialButton(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
-                  child: const Text("DELETE"),
                   onPressed: () => onRemove(o),
                   color: Colors.redAccent,
+                  child: const Text("DELETE"),
                 )
               ],
             ),
@@ -164,7 +168,7 @@ class OutfitTile extends StatelessWidget {
               child: Row(
                 children: [
                   // Display single accessory if there is one.
-                  o.accessories.length > 0
+                  o.accessories.isNotEmpty
                       ? Expanded(child: _outfitListItem(o.accessories.first, o))
                       : const SizedBox(),
                   // Display shoes.

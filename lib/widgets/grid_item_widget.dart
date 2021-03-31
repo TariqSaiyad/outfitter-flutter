@@ -27,7 +27,7 @@ class GridItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // set the hero animation key here.
-    String tag =
+    var tag =
         "${item.name}-${item.category}-${item.color}${outfit != null ? outfit.name : ""}";
 
     return isGrid ? buildHero(context, tag) : buildDisplay(tag);

@@ -3,27 +3,51 @@
 part of 'outfit.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
+// TypeAdapterGenerator
 // **************************************************************************
 
-Outfit _$OutfitFromJson(Map<String, dynamic> json) {
-  return Outfit(
-    json['name'] as String,
-    (json['accessories'] as List)
-        .map((e) => Item.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    (json['layers'] as List)
-        .map((e) => Item.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    Item.fromJson(json['pants'] as Map<String, dynamic>),
-    Item.fromJson(json['shoes'] as Map<String, dynamic>),
-  );
-}
+class OutfitAdapter extends TypeAdapter<Outfit> {
+  @override
+  final int typeId = 2;
 
-Map<String, dynamic> _$OutfitToJson(Outfit instance) => <String, dynamic>{
-      'name': instance.name,
-      'accessories': instance.accessories.map((e) => e.toJson()).toList(),
-      'layers': instance.layers.map((e) => e.toJson()).toList(),
-      'pants': instance.pants,
-      'shoes': instance.shoes,
+  @override
+  Outfit read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+    return Outfit(
+      fields[0] as String,
+      (fields[1] as HiveList)?.castHiveList(),
+      (fields[2] as HiveList)?.castHiveList(),
+      fields[3] as Item,
+      fields[4] as Item,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Outfit obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.accessories)
+      ..writeByte(2)
+      ..write(obj.layers)
+      ..writeByte(3)
+      ..write(obj.pants)
+      ..writeByte(4)
+      ..write(obj.shoes);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OutfitAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
