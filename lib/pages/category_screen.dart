@@ -37,7 +37,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   /// When the item is removed, update the item list.
   void _removeItem(Item i) {
     HiveHelpers.removeItem(i);
-    globalKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Text('${i.name} has been removed')));

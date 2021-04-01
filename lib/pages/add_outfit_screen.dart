@@ -11,8 +11,7 @@ import 'package:flutter/material.dart';
 class AddOutfitScreen extends StatefulWidget {
   final FirebaseAnalytics analytics;
 
-  const AddOutfitScreen({Key key, this.analytics})
-      : super(key: key);
+  const AddOutfitScreen({Key key, this.analytics}) : super(key: key);
 
   @override
   _AddOutfitScreenState createState() => _AddOutfitScreenState();
@@ -180,7 +179,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
     }
     // check if limit reached.
     if (selectedLayers.length == MAX_LAYERS) {
-      _key.currentState.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -203,7 +202,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
     }
     // check if limit reached.
     if (selectedAcc.length == MAX_ACCESSORIES) {
-      _key.currentState.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

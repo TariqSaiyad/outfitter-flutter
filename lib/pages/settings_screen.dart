@@ -167,13 +167,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: Text(title),
           content: content,
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: Navigator.of(context).pop,
               child: const Text('CANCEL'),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => _setColor(key),
-              child: const Text('SUBMIT'),
+              child: const Text('SELECT'),
             ),
           ],
         );

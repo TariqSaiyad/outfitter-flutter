@@ -77,7 +77,7 @@ class _AddItemScreenState extends State<AddItemScreen>
     //Add firebase.
     var f = FirebaseMethods();
     print("Adding...");
-    f.addItem(i).then((value) => print("added!!!!"));
+    // f.addItem(i).then((value) => print("added!!!!"));
 
     // add to items box
     HiveHelpers.addItem(i);
@@ -88,7 +88,7 @@ class _AddItemScreenState extends State<AddItemScreen>
       imagePath = null;
     });
     // Show some feedback using a SnackBar.
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Text('Item has been added!')));
@@ -175,9 +175,7 @@ class _AddItemScreenState extends State<AddItemScreen>
                     tooltip: "Redo photo",
                     onPressed: () {
                       Helper.deleteFile(imagePath);
-                      setState(() {
-                        isCamera = !isCamera;
-                      });
+                      setState(() => isCamera = !isCamera);
                     },
                     child: Icon(Icons.undo),
                   ),

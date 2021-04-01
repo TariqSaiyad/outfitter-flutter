@@ -3,6 +3,8 @@ import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
 import 'package:hive/hive.dart';
 
+/// Collection of methods for retrieving and performing various operations on Hive objects.
+/// Items, Outfits and a Map of the Category -> Item count are stored in Hive boxes.
 class HiveHelpers {
   HiveHelpers._();
 
@@ -17,12 +19,13 @@ class HiveHelpers {
     //open boxes
     await Hive.openBox<Item>(HiveBoxes.items);
     await Hive.openBox<Outfit>(HiveBoxes.outfits);
-    await Hive.openBox<Map<String, int>>(HiveBoxes.itemCounts);
+    await Hive.openBox(HiveBoxes.itemCounts);
   }
 
   /// Get the number of items stored in a particular category.
   static int getCategoryCount(String cat) {
-    return Hive.box(HiveBoxes.itemCounts).get(cat, defaultValue: 0);
+    return Hive.box(HiveBoxes.itemCounts)
+        .get(cat.toLowerCase(), defaultValue: 0);
   }
 
   /// Get a list of all items
@@ -32,14 +35,18 @@ class HiveHelpers {
 
   /// Get a list of all outfits
   static List<Outfit> getAllOutfits() {
-    return Hive.box<Outfit>(HiveBoxes.outfits).values.toList();
+    var start = DateTime.now();
+    var outfits = Hive.box<Outfit>(HiveBoxes.outfits).values.toList();
+    var end = DateTime.now();
+    print('Time to get all outfits : ${end.difference(start).inMilliseconds}');
+    return outfits;
   }
 
   /// Get a list of items in a given category.
   static List<Item> getItemsInCategory(String cat) {
     return Hive.box<Item>(HiveBoxes.items)
         .values
-        .where((i) => i.category.toLowerCase() == cat)
+        .where((i) => i.category.toLowerCase() == cat.toLowerCase())
         .toList();
   }
 
@@ -80,9 +87,9 @@ class HiveHelpers {
   /// Update the item counts in the given category.
   static void updateItemCount(String cat, String op) {
     var countBox = Hive.box(HiveBoxes.itemCounts);
-    var count = countBox.get(cat, defaultValue: 0) as int;
+    var count = countBox.get(cat.toLowerCase(), defaultValue: 0) as int;
     // increment, decrement accordingly.
     var newValue = op == "ADD" ? count + 1 : count - 1;
-    countBox.put(cat, newValue);
+    countBox.put(cat.toLowerCase(), newValue);
   }
 }

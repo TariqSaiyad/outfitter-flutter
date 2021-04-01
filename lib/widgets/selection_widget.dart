@@ -31,7 +31,6 @@ class _SelectionWidgetState extends State<SelectionWidget> {
   @override
   void initState() {
     super.initState();
-
     for (var cat in widget.list) {
       var tmp = HiveHelpers.getItemsInCategory(cat);
       catToItems[cat] = tmp;
@@ -44,7 +43,6 @@ class _SelectionWidgetState extends State<SelectionWidget> {
     var count = 0;
     for (var cat in catToItems.keys.toList()) {
       var tmp = catToItems[cat];
-
       if (tmp.isEmpty) continue;
 
       if (widget.withAppbar) {

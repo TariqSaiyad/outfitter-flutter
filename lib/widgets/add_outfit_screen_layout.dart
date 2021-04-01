@@ -57,8 +57,6 @@ class AddOutfitScreenLayout extends StatelessWidget {
             Divider(
               color: Theme.of(context).accentColor,
               thickness: 2,
-//              indent: 4,
-//              endIndent: 4,
             ),
             subtitle != null
                 ? Padding(

@@ -1,7 +1,6 @@
 import 'package:Outfitter/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'item.g.dart';
 

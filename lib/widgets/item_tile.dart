@@ -18,15 +18,13 @@ class ItemTile extends StatefulWidget {
 }
 
 class _ItemTileState extends State<ItemTile> {
-  String itemCount;
   String imgPath;
   String categoryName;
+  EdgeInsetsGeometry margin = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    itemCount = HiveHelpers.getCategoryCount(widget.type['name']).toString();
     imgPath = 'assets/${widget.type['image']}';
     categoryName = widget.type['name'].toString().toUpperCase();
   }
@@ -35,9 +33,10 @@ class _ItemTileState extends State<ItemTile> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.type['name'],
-      child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: AnimatedContainer(
+          margin: margin,
           height: widget.isDisplay ? 60 : 90,
+          duration: const Duration(milliseconds: 150),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Material(
@@ -47,6 +46,8 @@ class _ItemTileState extends State<ItemTile> {
                 child: InkWell(
                   splashColor: Theme.of(context).accentColor.withOpacity(0.3),
                   onTap: () => _onTapCategory(context),
+                  onTapDown: (TapDownDetails det) => _setMargin(2, 4),
+                  onTapCancel: () => _setMargin(4, 8),
                   child: Row(
                     children: [
                       widget.isDisplay
@@ -65,7 +66,9 @@ class _ItemTileState extends State<ItemTile> {
                         backgroundColor:
                             Theme.of(context).accentColor.withOpacity(0.6),
                         radius: 16,
-                        child: Text(itemCount,
+                        child: Text(
+                            HiveHelpers.getCategoryCount(widget.type['name'])
+                                .toString(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
@@ -79,6 +82,10 @@ class _ItemTileState extends State<ItemTile> {
             ),
           )),
     );
+  }
+
+  void _setMargin(double v, double h) {
+    setState(() => margin = EdgeInsets.symmetric(vertical: v, horizontal: h));
   }
 
   void _onTapCategory(BuildContext context) {

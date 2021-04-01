@@ -19,7 +19,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Item> items = [];
+  List<Item> allItems = [];
+  List<Item> filtered = [];
   String query = "";
   String category = "";
   String color = "";
@@ -44,7 +45,8 @@ class _SearchScreenState extends State<SearchScreen> {
               _scrollController.position.maxScrollExtent;
         });
       });
-    items = HiveHelpers.getAllItems();
+    allItems = HiveHelpers.getAllItems();
+    filtered = allItems;
 
     categoryList.addAll([NONE_CONST, ...CATEGORY_LIST]);
     typeList.addAll([NONE_CONST, ...CLOTHING_TYPES]);
@@ -125,23 +127,23 @@ class _SearchScreenState extends State<SearchScreen> {
     return Container(
       child: Column(
         children: [
-          SearchHeader(items: items),
+          SearchHeader(itemCount: filtered.length.toString()),
           Expanded(
               child: AnimatedSwitcher(
             switchOutCurve: Curves.easeIn,
             switchInCurve: Curves.easeIn,
             duration: const Duration(milliseconds: 300),
-            child: items.isNotEmpty
+            child: filtered.isNotEmpty
                 ? GridView.builder(
                     padding: const EdgeInsets.all(8),
-                    itemCount: items.length,
+                    itemCount: filtered.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,
                     ),
                     itemBuilder: (context, index) {
-                      var i = items[index];
+                      var i = filtered[index];
                       return AnimationConfiguration.staggeredGrid(
                           columnCount: 2,
                           position: index,
@@ -240,7 +242,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     //filter the items by the different categories.
     // the filters are all '&&' together to compound searches.
-    items = items
+    filtered = allItems
         .where((element) =>
             element.name.toLowerCase().contains(query.toLowerCase()) &&
             element.category.toLowerCase().contains(category.toLowerCase()) &&
@@ -248,23 +250,16 @@ class _SearchScreenState extends State<SearchScreen> {
             element.dressCode.toLowerCase().contains(code.toLowerCase()) &&
             element.type.toLowerCase().contains(type.toLowerCase()))
         .toList();
-
-//      this.searchItems = this.items.filter((item) => {
-//          return item.payload.doc.data().category.toLowerCase().includes(this.categoryInput.toLowerCase()) &&
-//          item.payload.doc.data().color.toLowerCase().includes(this.colorInput.toLowerCase()) &&
-//          item.payload.doc.data().dressCode.toLowerCase().includes(this.dressCodeInput.toLowerCase()) &&
-//          item.payload.doc.data().clothingType.toLowerCase().includes(this.clothingTypeInput.toLowerCase())
-//    });
   }
 }
 
 class SearchHeader extends StatelessWidget {
   const SearchHeader({
     Key key,
-    @required this.items,
+    @required this.itemCount,
   }) : super(key: key);
 
-  final List<Item> items;
+  final String itemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -278,7 +273,7 @@ class SearchHeader extends StatelessWidget {
         CircleAvatar(
           backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
           radius: 16,
-          child: Text(items.length.toString(),
+          child: Text(itemCount,
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w300,

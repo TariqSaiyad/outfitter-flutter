@@ -241,7 +241,7 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
 
   List<DropdownMenuItem<String>> _buildColorList() {
     var items = <DropdownMenuItem<String>>[];
-    for (String i in COLORS_LIST.keys) {
+    for (var i in COLORS_LIST.keys) {
       items.add(
         DropdownMenuItem(
           value: i,
@@ -270,8 +270,7 @@ class DropDownWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: _fieldPadding,
-        child: OutlineButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: OutlinedButton(
           onPressed: () {},
           child: child,
         ));

@@ -102,7 +102,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _showAd() async {
-//    TODO: add random event.
 //    Random rand = new Random();
 //    if (rand.nextBool()) return;
     await myInterstitial.load();

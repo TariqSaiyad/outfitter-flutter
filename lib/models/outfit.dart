@@ -1,6 +1,5 @@
 import 'package:Outfitter/constants/constants.dart';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import 'item.dart';
 

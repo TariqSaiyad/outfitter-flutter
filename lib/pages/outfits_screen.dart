@@ -15,13 +15,9 @@ class OutfitScreen extends StatefulWidget {
 }
 
 class _OutfitScreenState extends State<OutfitScreen> {
-  List<Outfit> outfits;
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    outfits = HiveHelpers.getAllOutfits();
   }
 
   void onRemove(Outfit o) {
@@ -32,6 +28,7 @@ class _OutfitScreenState extends State<OutfitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var outfits = HiveHelpers.getAllOutfits();
     return SafeArea(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
