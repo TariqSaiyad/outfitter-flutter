@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
@@ -53,8 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text(
           "SETTINGS",
-          style: TextStyle(
-              letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
+          style: Styles.title,
         ),
       ),
       body: Padding(
@@ -78,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onPressed: _showAboutDialog,
                 child: const Text(
                   "ABOUT APP",
-                  style: const TextStyle(letterSpacing: 1.5),
+                  style: Styles.spaced2,
                 ),
               )
             ]))
@@ -102,9 +102,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             thickness: 1,
           ),
           Text(
-            'Flick me an email if you have any feedback or questions :)',
+            'Flick me an email if you have any feedback or questions',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Styles.subtitle2,
           ),
           const SizedBox(height: 16),
           GestureDetector(
@@ -115,7 +115,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const Text(
                     'tariqsaiyad98@gmail.com',
                     textAlign: TextAlign.center,
-                    style: TextStyle(decoration: TextDecoration.underline),
+                    style:
+                        const TextStyle(decoration: TextDecoration.underline),
                   ),
                   const Icon(
                     Icons.launch,

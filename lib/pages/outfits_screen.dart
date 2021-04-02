@@ -1,3 +1,5 @@
+import 'package:Outfitter/constants/styles.dart';
+import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
@@ -111,12 +113,9 @@ class OutfitTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              o.name,
+              Helper.capitalise(o.name),
               textAlign: TextAlign.left,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  .copyWith(letterSpacing: 1.4),
+              style: Styles.header3,
             ),
             InkWell(
               onTap: () => _confirmDeleteDialog(context, o),

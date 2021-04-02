@@ -1,4 +1,5 @@
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
@@ -131,8 +132,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           toolbarHeight: currentPage == 0 ? 0 : null,
           title: const Text(
             "OUTFITTER",
-            style:
-                const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
+            style:Styles.title,
           ),
           actions: [
             AnimatedSwitcher(

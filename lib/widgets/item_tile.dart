@@ -1,4 +1,6 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
+import 'package:Outfitter/widgets/circular_badge.dart';
 
 import '../pages/category_screen.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +33,9 @@ class _ItemTileState extends State<ItemTile> {
 
   @override
   Widget build(BuildContext context) {
+    var cat = widget.type['name'];
     return Hero(
-      tag: widget.type['name'],
+      tag: cat,
       child: AnimatedContainer(
           margin: margin,
           height: widget.isDisplay ? 60 : 90,
@@ -55,24 +58,11 @@ class _ItemTileState extends State<ItemTile> {
                           : const SizedBox(width: 12),
                       Text(
                         categoryName,
-                        style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 4,
-                            fontWeight: FontWeight.w400,
-                            fontSize: widget.isDisplay ? 20 : 24),
+                        style: Styles.textX(widget.isDisplay ? 20 : 24),
                       ),
                       const Spacer(),
-                      CircleAvatar(
-                        backgroundColor:
-                            Theme.of(context).accentColor.withOpacity(0.6),
-                        radius: 16,
-                        child: Text(
-                            HiveHelpers.getCategoryCount(widget.type['name'])
-                                .toString(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: widget.isDisplay ? 18 : 20)),
+                      CircularBadge(
+                        text: HiveHelpers.getCategoryCount(cat).toString(),
                       ),
                       const SizedBox(width: 12)
                     ],

@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
@@ -119,7 +120,7 @@ class ItemDetail extends StatelessWidget {
             title: value != null ? Text(value) : child,
             trailing: Text(
               attribute,
-              style: Theme.of(context).textTheme.caption,
+              style: Styles.subtitle2,
             ),
           ),
         ),
@@ -162,10 +163,7 @@ class SliverItemTitle extends StatelessWidget {
             const Spacer(),
             Text(
               title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  .copyWith(letterSpacing: 1),
+              style: Styles.text18,
             ),
             const Spacer(),
             trailing != null
@@ -173,7 +171,7 @@ class SliverItemTitle extends StatelessWidget {
                     padding: EdgeInsets.only(right: 16 * (1 - offset) + 8),
                     child: trailing,
                   )
-                : SizedBox()
+                : const SizedBox()
           ],
         ),
         Divider(

@@ -1,7 +1,9 @@
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
+import 'package:Outfitter/widgets/circular_badge.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -156,10 +158,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 : Center(
                     child: Text(
                       "NO ITEMS",
-                      style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.headline6.fontSize,
-                          letterSpacing: 1.5),
+                      style: Styles.header3,
                     ),
                   ),
           ))
@@ -266,21 +265,9 @@ class SearchHeader extends StatelessWidget {
     return AppBar(
       title: const Text(
         "ITEM SEARCH",
-        style: const TextStyle(
-            letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
+        style: Styles.title,
       ),
-      actions: [
-        CircleAvatar(
-          backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
-          radius: 16,
-          child: Text(itemCount,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 18)),
-        ),
-        const SizedBox(width: 8)
-      ],
+      actions: [CircularBadge(text: itemCount), const SizedBox(width: 8)],
     );
   }
 }
@@ -328,7 +315,7 @@ class _InputSwiperState extends State<InputSwiper> {
                 child: Text(
                   widget.title,
                   style:
-                      Theme.of(context).textTheme.caption.copyWith(color: fCol),
+                  Theme.of(context).textTheme.caption.copyWith(color: fCol),
                   textAlign: TextAlign.center,
                 ),
               ),

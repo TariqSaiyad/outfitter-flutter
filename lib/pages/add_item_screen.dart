@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
@@ -135,7 +136,7 @@ class _AddItemScreenState extends State<AddItemScreen>
           const SizedBox(height: 8),
           const Text(
             'Enter Item Details',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: Styles.text16,
           ),
           Divider(
             thickness: 2,
@@ -258,10 +259,7 @@ class PreviewFormWidget extends StatelessWidget {
             child: Center(
               child: const Text(
                 'Drag up to enter item details',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                style: Styles.text18,
               ),
             ),
           ),

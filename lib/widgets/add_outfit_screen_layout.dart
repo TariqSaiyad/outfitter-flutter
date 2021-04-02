@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:flutter/material.dart';
 
 const int NUM_PAGES = 5;
@@ -47,10 +48,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
               padding: const EdgeInsets.only(top: 32),
               child: Text(
                 title ?? "No Title",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    .copyWith(letterSpacing: 1.5),
+                style: Styles.header3,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -63,10 +61,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       subtitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(letterSpacing: 1),
+                      style: Styles.subtitle1,
                       textAlign: TextAlign.center,
                     ),
                   )

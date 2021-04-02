@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -89,10 +90,7 @@ class _CustomDialogState extends State<CustomDialog> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Text(
               widget.title,
-              style: TextStyle(
-                letterSpacing: 1,
-                fontSize: 18.0,
-              ),
+              style: Styles.text18,
             ),
           ),
         ),

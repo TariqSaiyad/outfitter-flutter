@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -12,8 +13,7 @@ class LoadingScreen extends StatelessWidget {
             const CircularProgressIndicator(),
             const SizedBox(height: 30),
             const Text("LOADING...",
-                style: TextStyle(letterSpacing: 2),
-                textDirection: TextDirection.ltr)
+                style: Styles.spaced2, textDirection: TextDirection.ltr)
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:flutter/material.dart';
@@ -46,20 +47,19 @@ class _SelectionWidgetState extends State<SelectionWidget> {
       if (tmp.isEmpty) continue;
 
       if (widget.withAppbar) {
-        widgetList
-          .add(SliverAppBar(
-            toolbarHeight: kToolbarHeight * 0.8,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(count % 2 == 0 ? 8 : 0),
-              topRight: Radius.circular(count % 2 == 0 ? 8 : 0),
-              bottomLeft: Radius.circular(count % 2 == 0 ? 0 : 8),
-              bottomRight: Radius.circular(count % 2 == 0 ? 0 : 8),
-            )),
-            automaticallyImplyLeading: false,
-            title: Text(cat, style: TextStyle(letterSpacing: 1.5)),
-            pinned: true,
-          ));
+        widgetList.add(SliverAppBar(
+          toolbarHeight: kToolbarHeight * 0.8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(count % 2 == 0 ? 8 : 0),
+            topRight: Radius.circular(count % 2 == 0 ? 8 : 0),
+            bottomLeft: Radius.circular(count % 2 == 0 ? 0 : 8),
+            bottomRight: Radius.circular(count % 2 == 0 ? 0 : 8),
+          )),
+          automaticallyImplyLeading: false,
+          title: Text(cat, style: Styles.spaced2),
+          pinned: true,
+        ));
       }
 
       widgetList.add(SliverGrid(
