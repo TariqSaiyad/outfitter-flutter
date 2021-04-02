@@ -27,10 +27,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   /// Filter the items for this category.
   void _getItems() {
-    var cat = widget.type['name'].toString().toLowerCase();
-    setState(() {
-      items = HiveHelpers.getItemsInCategory(cat);
-    });
+    var cat = widget.type['name'].toString();
+    setState(() => items = HiveHelpers.getItemsInCategory(cat));
   }
 
   /// Remove the item and display a snackbar.

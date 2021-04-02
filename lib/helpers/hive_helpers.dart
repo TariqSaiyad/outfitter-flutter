@@ -44,44 +44,49 @@ class HiveHelpers {
 
   /// Get a list of items in a given category.
   static List<Item> getItemsInCategory(String cat) {
-    return Hive.box<Item>(HiveBoxes.items)
-        .values
+    var box = Hive.box<Item>(HiveBoxes.items);
+    return box.values
         .where((i) => i.category.toLowerCase() == cat.toLowerCase())
         .toList();
   }
 
-  // Add item to the items box
+  /// Add item to the items box and update item count map.
   static void addItem(Item i) {
-    // add to item list.
     Hive.box<Item>(HiveBoxes.items).add(i);
-    // update the counts.
     updateItemCount(i.category, "ADD");
     print("item ${i.name} ADDED!");
   }
 
   /// Remove an item from the box.
   /// Returns true if the item is removed successfully.
-  static Future<void> removeItem(Item i) async {
-    updateItemCount(i.category, "DELETE");
-    await i.delete();
-    print("REMOVED ITEM!");
-    return true;
+  static Future<bool> removeItem(Item i) async {
+    var cat = i.category;
+    return await i.delete().then((value) {
+      updateItemCount(cat, "DELETE");
+      print("REMOVED ITEM!");
+      return true;
+    }, onError: (err) {
+      print(err);
+      return false;
+    });
   }
 
   /// Add a new outfit to the outfits box.
   static void addOutfit(Outfit o) {
-    // add to outfit box.
     Hive.box<Outfit>(HiveBoxes.outfits).add(o);
-    // update the counts.
     print("OUTFIT ${o.name} ADDED!");
   }
 
   /// Remove outfit from the box.
   /// Returns true if the outfit is removed successfully.
   static Future<bool> removeOutfit(Outfit o) async {
-    await o.delete();
-    print("REMOVED OUTFIT!");
-    return true;
+    return await o.delete().then((value) {
+      print("REMOVED OUTFIT!");
+      return true;
+    }, onError: (err) {
+      print(err);
+      return false;
+    });
   }
 
   /// Update the item counts in the given category.
