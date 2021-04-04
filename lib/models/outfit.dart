@@ -39,20 +39,20 @@ class Outfit extends HiveObject {
   @override
   int get hashCode => name.hashCode;
 
-//  Map<String, dynamic> toJSON() {
-//    Map<String, dynamic> m = new Map();
-//    m['name'] = name;
-//
-//    m['layers'] = layers.map((item) {
-//      return item.toJSON();
-//    }).toList();
-//
-//    m['accessories'] = accessories.map((item) {
-//      return item.toJSON();
-//    }).toList();
-//
-//    m['pants'] = pants.toJSON();
-//    m['shoes'] = shoes.toJSON();
-//    return m;
-//  }
+  Map<String, dynamic> toJSON() {
+    var m = <String, dynamic>{};
+    m['name'] = name;
+
+    m['layers'] = layers.map((item) {
+      return item.toJson();
+    }).toList();
+
+    m['accessories'] = accessories.map((item) {
+      return item.toJson();
+    }).toList();
+
+    m['pants'] = pants.toJson();
+    m['shoes'] = shoes.toJson();
+    return m;
+  }
 }

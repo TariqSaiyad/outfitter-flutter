@@ -5,6 +5,16 @@ import 'package:flutter/material.dart';
 //const String SHIRTS ="Jackets";
 //const String SHIRTS ="Pants";
 
+class Categories {
+  static const String SHIRTS = "Shirts";
+  static const String HOODIES = "Hoodies";
+  static const String JACKETS = "Jackets";
+  static const String PANTS = "Pants";
+  static const String SHORTS = "Shorts";
+  static const String SHOES = "Shoes";
+  static const String ACCESSORIES = "Accessories";
+}
+
 const List TYPES = [
   {"name": "shirts", "image": "shirts.jpg"},
   {"name": "hoodies", "image": "hoodies.jpg"},
@@ -16,23 +26,23 @@ const List TYPES = [
 ];
 
 const List<String> CATEGORY_LIST = [
-  "Shirts",
-  "Hoodies",
-  "Jackets",
-  "Pants",
-  "Shorts",
-  "Shoes",
-  "Accessories",
+  Categories.SHIRTS,
+  Categories.HOODIES,
+  Categories.JACKETS,
+  Categories.PANTS,
+  Categories.SHORTS,
+  Categories.SHOES,
+  Categories.ACCESSORIES,
 ];
 
 const List<String> LAYERS_LIST = [
-  "Shirts",
-  "Hoodies",
-  "Jackets",
+  Categories.SHIRTS,
+  Categories.HOODIES,
+  Categories.JACKETS,
 ];
 const List<String> LEGWEAR_LIST = [
-  "Pants",
-  "Shorts",
+  Categories.PANTS,
+  Categories.SHORTS,
 ];
 
 const Map<String, Color> COLORS_LIST = {
@@ -68,6 +78,7 @@ const FEATURES = [
 class HiveBoxes {
   HiveBoxes._();
 
+  //FIXME: needs to be fixed
   static const String items = 'favorites';
   static const String outfits = 'searches';
   static const String itemCounts = 'itemCounts';

@@ -1,8 +1,6 @@
 import 'package:Outfitter/constants/constants.dart';
 import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
-import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/outfit.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:Outfitter/pages/search_screen.dart';
 import 'package:Outfitter/pages/settings_screen.dart';
@@ -15,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:hive/hive.dart';
 import 'package:preferences/preference_service.dart';
 
 import '../constants/constants.dart';
@@ -33,8 +30,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  List<Item> items;
-  List<Outfit> outfits;
   int currentPage = 1;
   PageController controller;
   Brightness brightness;
@@ -85,11 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    items = Hive.box<Item>(HiveBoxes.items).values.toList();
-    outfits = Hive.box<Outfit>(HiveBoxes.outfits).values.toList();
-
 //    resetPref();
-    //TODO: ad stuff
     // _showAd();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
@@ -102,13 +93,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  void _showAd() async {
-//    Random rand = new Random();
-//    if (rand.nextBool()) return;
-    await myInterstitial.load();
-    // myInterstitial.show();
-    await myBanner.load();
-  }
+//   void _showAd() async {
+// //    Random rand = new Random();
+// //    if (rand.nextBool()) return;
+//     await myInterstitial.load();
+//     // myInterstitial.show();
+//     await myBanner.load();
+//   }
 
 //  void resetPref(BuildContext context) {
 //    FeatureDiscovery.hasPreviouslyCompleted(context, 'first_id')
@@ -132,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           toolbarHeight: currentPage == 0 ? 0 : null,
           title: const Text(
             "OUTFITTER",
-            style:Styles.title,
+            style: Styles.title,
           ),
           actions: [
             AnimatedSwitcher(
@@ -266,7 +257,7 @@ class ItemsScreen extends StatelessWidget {
             type: i,
           ),
         ),
-      //TODO: remove late to enable ad
+      //TODO: remove later to enable ad
       // Expanded(child: AdWidget(ad: banner)),
       const SizedBox(height: 4),
     ]));

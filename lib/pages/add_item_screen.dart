@@ -6,6 +6,7 @@ import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/services/firebase.dart';
 import 'package:Outfitter/widgets/add_item_form.dart';
+import 'package:Outfitter/widgets/custom_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -78,7 +79,7 @@ class _AddItemScreenState extends State<AddItemScreen>
     //Add firebase.
     var f = FirebaseMethods();
     print("Adding...");
-    // f.addItem(i).then((value) => print("added!!!!"));
+    f.addItem(i).then((value) => print("added!!!!"));
 
     // add to items box
     HiveHelpers.addItem(i);
@@ -318,14 +319,32 @@ class CameraPreviewWidget extends StatelessWidget {
                   child: const Icon(Icons.camera_alt),
                 ),
               ),
-              const Spacer(),
-//TODO: add help dialog here!
-//              Expanded(
-//                child: IconButton(
-//                  icon: const Icon(Icons.info_outline),
-//                  onPressed: () => print("HELP!"),
-//                ),
-//              ),
+              // const Spacer(),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext b) {
+                          return CustomDialog(
+                            title: "Adding items",
+                            content: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: const Text(
+                                  "Take a picture of the clothing item to add. \n\n"
+                                  "For clarity, make sure to take the picture straight on with good lighting",
+                                  style: Styles.subtitle2,
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                ),
+              ),
             ],
           ),
         )

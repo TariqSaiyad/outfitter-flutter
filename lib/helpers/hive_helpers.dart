@@ -22,23 +22,53 @@ class HiveHelpers {
     await Hive.openBox(HiveBoxes.itemCounts);
   }
 
+  static Future<void> deleteAll() async {
+    print("DELETING ALL BOXES....");
+    // Hive.box<Item>(HiveBoxes.items).values.map((e) {
+    //   print('Deleting ${e.name}');
+    //   e.delete();
+    // });
+    // Hive.box<Outfit>(HiveBoxes.outfits).values.map((e) {
+    //   print('Deleting ${e.name}');
+    //   e.delete();
+    // });
+    await Hive.box<Outfit>(HiveBoxes.outfits).clear();
+    await Hive.box<Item>(HiveBoxes.items).clear();
+    await Hive.box(HiveBoxes.itemCounts).clear();
+    // await Hive.deleteFromDisk();
+    // await Hive.deleteFromDisk();
+  }
+
   /// Get the number of items stored in a particular category.
   static int getCategoryCount(String cat) {
+    if (!Hive.isBoxOpen(HiveBoxes.itemCounts)) {
+      return -1;
+    }
     return Hive.box(HiveBoxes.itemCounts)
         .get(cat.toLowerCase(), defaultValue: 0);
   }
 
   /// Get a list of all items
   static List<Item> getAllItems() {
-    return Hive.box<Item>(HiveBoxes.items).values.toList();
+    var items = Hive.box<Item>(HiveBoxes.items).values.toList();
+    print('Total items: ${items.length}\n\n');
+    // items.map((e) => print(e.toJson()));
+    for (var o in items) {
+      print(o.toJson());
+    }
+    return items;
   }
 
   /// Get a list of all outfits
   static List<Outfit> getAllOutfits() {
+    if (!Hive.isBoxOpen(HiveBoxes.outfits)) {
+      return <Outfit>[];
+    }
     var start = DateTime.now();
     var outfits = Hive.box<Outfit>(HiveBoxes.outfits).values.toList();
     var end = DateTime.now();
-    print('Time to get all outfits : ${end.difference(start).inMilliseconds}');
+    // print('Time to get all outfits : ${end.difference(start).inMilliseconds}');
+    print('Total outfits : ${outfits.length}');
     return outfits;
   }
 
@@ -51,10 +81,10 @@ class HiveHelpers {
   }
 
   /// Add item to the items box and update item count map.
-  static void addItem(Item i) {
-    Hive.box<Item>(HiveBoxes.items).add(i);
+  static Future<void> addItem(Item i) async {
+    await Hive.box<Item>(HiveBoxes.items).add(i);
     updateItemCount(i.category, "ADD");
-    print("item ${i.name} ADDED!");
+    // print("item ${i.name} ADDED!");
   }
 
   /// Remove an item from the box.
@@ -94,7 +124,8 @@ class HiveHelpers {
     var countBox = Hive.box(HiveBoxes.itemCounts);
     var count = countBox.get(cat.toLowerCase(), defaultValue: 0) as int;
     // increment, decrement accordingly.
-    var newValue = op == "ADD" ? count + 1 : count - 1;
+    var newValue = op == "ADD" ? ++count : --count;
+    // print('Adding $newValue - ${cat.toLowerCase()}');
     countBox.put(cat.toLowerCase(), newValue);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
@@ -55,18 +56,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                      itemCount: items.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        var i = items[index];
-                        return GridItemWidget(
-                            item: i, removeItemFn: _removeItem);
-                      }),
+                  child: items.isNotEmpty
+                      ? GridView.builder(
+                          itemCount: items.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemBuilder: (context, index) {
+                            var i = items[index];
+                            return GridItemWidget(
+                                item: i, removeItemFn: _removeItem);
+                          })
+                      : Center(
+                          child: Text(
+                            "NO ITEMS",
+                            style: Styles.header3,
+                          ),
+                        ),
                 ),
               )
             ],
