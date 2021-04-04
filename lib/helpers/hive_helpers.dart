@@ -67,7 +67,7 @@ class HiveHelpers {
     var start = DateTime.now();
     var outfits = Hive.box<Outfit>(HiveBoxes.outfits).values.toList();
     var end = DateTime.now();
-    // print('Time to get all outfits : ${end.difference(start).inMilliseconds}');
+    print('Time to get all outfits : ${end.difference(start).inMilliseconds}');
     print('Total outfits : ${outfits.length}');
     return outfits;
   }
