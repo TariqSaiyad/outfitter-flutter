@@ -1,6 +1,6 @@
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/pages/outfits_screen.dart';
 import 'package:Outfitter/pages/search_screen.dart';
 import 'package:Outfitter/pages/settings_screen.dart';
@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:preferences/preference_service.dart';
 
 import '../constants/constants.dart';
 import 'add_item_screen.dart';
@@ -30,13 +29,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  Person person;
   int currentPage = 1;
   PageController controller;
-  Brightness brightness;
 
   /// True if the outfit page displaying the alt. view.
   bool isAltOutfitView = false;
+
   final BannerAd myBanner = BannerAd(
     adUnitId: BannerAd.testAdUnitId,
     size: AdSize.fullBanner,
@@ -79,28 +77,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-//    resetPref();
 
-    _showAd();
+//    resetPref();
+    // _showAd();
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
-    brightness = ThemeData.estimateBrightnessForColor(
-        Color(PrefService.getInt('primary_col')));
 
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      FeatureDiscovery.discoverFeatures(context, ['first_id']);
+      FeatureDiscovery.discoverFeatures(context, FEATURES);
     });
   }
 
-  void _showAd() async {
-//    TODO: add random event.
-//    Random rand = new Random();
-//    if (rand.nextBool()) return;
-    await myInterstitial.load();
-    // myInterstitial.show();
-    await myBanner.load();
-  }
+//   void _showAd() async {
+// //    Random rand = new Random();
+// //    if (rand.nextBool()) return;
+//     await myInterstitial.load();
+//     // myInterstitial.show();
+//     await myBanner.load();
+//   }
 
 //  void resetPref(BuildContext context) {
 //    FeatureDiscovery.hasPreviouslyCompleted(context, 'first_id')
@@ -111,22 +106,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 //
 //  }
 
-  Future<bool> initData() {
-    return Person.storage.ready.then((value) {
-      if (person == null) {
-        person = Person.fromStorage();
-        print("HERE");
-      }
-//      print(person.toJson());
-//      person.items.map((e) => print(e.name));
-      return true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    Color complement = Helper.getComplement(Theme.of(context).primaryColor);
+    var complement = Helper.getComplement(Theme.of(context).primaryColor);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         floatingActionButton: _getFAB(context),
@@ -136,8 +119,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           toolbarHeight: currentPage == 0 ? 0 : null,
           title: const Text(
             "OUTFITTER",
-            style:
-                const TextStyle(letterSpacing: 2, fontWeight: FontWeight.w400),
+            style: Styles.title,
           ),
           actions: [
             AnimatedSwitcher(
@@ -148,20 +130,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         icon: Icon(!isAltOutfitView
                             ? Icons.swap_horiz
                             : Icons.swap_horizontal_circle),
-                        onPressed: () {
-                          setState(() {
-                            isAltOutfitView = !isAltOutfitView;
-                          });
-                        })
+                        onPressed: () => _toggleAltView())
                     : const SizedBox()),
             IconButton(
                 tooltip: "Search Items",
                 icon: const Icon(Icons.search),
-                onPressed: () => _goToSearch(context)),
+                onPressed: () =>
+                    _goToScreen(context, 'search_page', SearchScreen())),
             IconButton(
                 tooltip: "Settings Page",
                 icon: const Icon(Icons.settings),
-                onPressed: () => _goToSettings(context)),
+                onPressed: () => _goToScreen(context, 'settings_page',
+                    SettingsScreen(setScreen: setScreen))),
 //            IconButton(
 //                tooltip: "Settings Page",
 //                icon: const Icon(Icons.category),
@@ -182,26 +162,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               TabItem(title: "Outfits", icon: Icons.checkroom_rounded),
             ],
             onTap: (int i) => _goToPage(i)),
-        body: FutureBuilder(
-          future: initData(),
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.hasData) {
-              return PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: controller,
-                children: <Widget>[
-                  AddItemScreen(
-                      cameras: widget.cameras,
-                      person: person,
-                      analytics: widget.analytics),
-                  ItemsScreen(person: person, banner: myBanner),
-                  OutfitScreen(
-                      person: person, isAltOutfitView: isAltOutfitView),
-                ],
-              );
-            }
-            return const CircularProgressIndicator();
-          },
+        body: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: controller,
+          children: <Widget>[
+            AddItemScreen(cameras: widget.cameras, analytics: widget.analytics),
+            ItemsScreen(banner: myBanner),
+            OutfitScreen(isAltOutfitView: isAltOutfitView),
+          ],
         ));
   }
 
@@ -212,11 +180,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             autofocus: true,
             highlightElevation: 0,
             splashColor: Theme.of(context).primaryColor,
-            onPressed: () => _goToAddOutfit(context),
+            onPressed: () => _goToScreen(context, 'add_outfit_page',
+                AddOutfitScreen(analytics: widget.analytics)),
             label: Text("Add Outfit"),
           )
         : null;
   }
+
+  void _toggleAltView() => setState(() => isAltOutfitView = !isAltOutfitView);
 
   void _goToPage(int i) {
     setScreen(SCREEN_MAP[i]);
@@ -224,34 +195,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
-  void _goToSettings(BuildContext context) {
-    setScreen("settings_page");
+  void _goToScreen(BuildContext context, String screen, Widget widget) {
+    setScreen(screen);
     Navigator.push(
             context,
             MaterialPageRoute(
-                settings: RouteSettings(name: 'settings_page'),
-                builder: (context) => SettingsScreen(setScreen: setScreen)))
-        .then((value) => setScreen(SCREEN_MAP[currentPage]));
-  }
-
-  void _goToSearch(BuildContext context) {
-    setScreen("search_page");
-    Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'search_page'),
-                builder: (context) => SearchScreen(person: person)))
-        .then((value) => setScreen(SCREEN_MAP[currentPage]));
-  }
-
-  void _goToAddOutfit(BuildContext context) {
-    setScreen("add_outfit_page");
-    Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'add_outfit_page'),
-                builder: (context) => AddOutfitScreen(
-                    person: person, analytics: widget.analytics)))
+                settings: RouteSettings(name: screen),
+                builder: (context) => widget))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 
@@ -265,11 +215,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 class ItemsScreen extends StatelessWidget {
   const ItemsScreen({
     Key key,
-    @required this.person,
     this.banner,
   }) : super(key: key);
 
-  final Person person;
   final BannerAd banner;
 
   @override
@@ -280,11 +228,11 @@ class ItemsScreen extends StatelessWidget {
       for (var i in TYPES)
         Expanded(
           child: ItemTile(
-            person: person,
             type: i,
           ),
         ),
-      Expanded(child: AdWidget(ad: banner)),
+      //TODO: remove later to enable ad
+      // Expanded(child: AdWidget(ad: banner)),
       const SizedBox(height: 4),
     ]));
   }

@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/services/firebase.dart';
 import 'package:Outfitter/widgets/add_item_form.dart';
+import 'package:Outfitter/widgets/custom_dialog.dart';
 import 'package:camera/camera.dart';
 import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -13,11 +15,9 @@ import 'package:path_provider/path_provider.dart';
 
 class AddItemScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
-  final Person person;
   final FirebaseAnalytics analytics;
 
-  const AddItemScreen(
-      {Key key, @required this.person, this.cameras, this.analytics})
+  const AddItemScreen({Key key, this.cameras, this.analytics})
       : super(key: key);
 
   @override
@@ -74,15 +74,15 @@ class _AddItemScreenState extends State<AddItemScreen>
     }
   }
 
-  /// Add item to Person object when the form is complete.
+  /// Add item when the form is complete.
   void onFormComplete(Item i) {
     //Add firebase.
     var f = FirebaseMethods();
     print("Adding...");
     f.addItem(i).then((value) => print("added!!!!"));
 
-    // add to person object
-    widget.person.addItem(i);
+    // add to items box
+    HiveHelpers.addItem(i);
     widget.analytics
         .logEvent(name: 'add_item_event', parameters: {'category': i.category});
     setState(() {
@@ -90,7 +90,7 @@ class _AddItemScreenState extends State<AddItemScreen>
       imagePath = null;
     });
     // Show some feedback using a SnackBar.
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Text('Item has been added!')));
@@ -137,7 +137,7 @@ class _AddItemScreenState extends State<AddItemScreen>
           const SizedBox(height: 8),
           const Text(
             'Enter Item Details',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: Styles.text16,
           ),
           Divider(
             thickness: 2,
@@ -177,9 +177,7 @@ class _AddItemScreenState extends State<AddItemScreen>
                     tooltip: "Redo photo",
                     onPressed: () {
                       Helper.deleteFile(imagePath);
-                      setState(() {
-                        isCamera = !isCamera;
-                      });
+                      setState(() => isCamera = !isCamera);
                     },
                     child: Icon(Icons.undo),
                   ),
@@ -262,10 +260,7 @@ class PreviewFormWidget extends StatelessWidget {
             child: Center(
               child: const Text(
                 'Drag up to enter item details',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                style: Styles.text18,
               ),
             ),
           ),
@@ -324,14 +319,32 @@ class CameraPreviewWidget extends StatelessWidget {
                   child: const Icon(Icons.camera_alt),
                 ),
               ),
-              const Spacer(),
-//TODO: add help dialog here!
-//              Expanded(
-//                child: IconButton(
-//                  icon: const Icon(Icons.info_outline),
-//                  onPressed: () => print("HELP!"),
-//                ),
-//              ),
+              // const Spacer(),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext b) {
+                          return CustomDialog(
+                            title: "Adding items",
+                            content: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: const Text(
+                                  "Take a picture of the clothing item to add. \n\n"
+                                  "For clarity, make sure to take the picture straight on with good lighting",
+                                  style: Styles.subtitle2,
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+                  },
+                ),
+              ),
             ],
           ),
         )

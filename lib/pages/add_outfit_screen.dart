@@ -1,7 +1,7 @@
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/add_outfit_screen_layout.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:Outfitter/widgets/selection_widget.dart';
@@ -9,11 +9,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 class AddOutfitScreen extends StatefulWidget {
-  final Person person;
   final FirebaseAnalytics analytics;
 
-  const AddOutfitScreen({Key key, this.person, this.analytics})
-      : super(key: key);
+  const AddOutfitScreen({Key key, this.analytics}) : super(key: key);
 
   @override
   _AddOutfitScreenState createState() => _AddOutfitScreenState();
@@ -22,6 +20,7 @@ class AddOutfitScreen extends StatefulWidget {
 class _AddOutfitScreenState extends State<AddOutfitScreen> {
   PageController controller;
   final _key = GlobalKey<ScaffoldState>();
+  List<Item> items;
   int current = 0;
   String name = "";
   List<Item> selectedLayers = [];
@@ -32,6 +31,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
   @override
   void initState() {
     super.initState();
+    items = HiveHelpers.getAllItems();
     controller = PageController(initialPage: current);
     controller.addListener(() {
       setState(() {
@@ -66,9 +66,9 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
             pageIndex: current,
             subtitle: "Hint: You can select 1-$MAX_LAYERS of these",
             leftFn: goToPrevious,
-            rightFn: selectedLayers.length == 0 ? null : goToNext,
+            rightFn: selectedLayers.isEmpty ? null : goToNext,
             widget: SelectionWidget(
-              items: widget.person.items,
+              items: items,
               list: LAYERS_LIST,
               onTap: addOrRemoveLayer,
               test: (Item i) => selectedLayers.contains(i),
@@ -80,7 +80,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
             leftFn: goToPrevious,
             rightFn: selectedLegwear == null ? null : goToNext,
             widget: SelectionWidget(
-              items: widget.person.items,
+              items: items,
               list: LEGWEAR_LIST,
               onTap: (Item i) => setState(() => selectedLegwear = i),
               test: (Item i) => selectedLegwear == i,
@@ -92,7 +92,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
             leftFn: goToPrevious,
             rightFn: selectedShoes == null ? null : goToNext,
             widget: SelectionWidget(
-                items: widget.person.items,
+                items: items,
                 list: ['Shoes'],
                 onTap: (Item i) => setState(() => selectedShoes = i),
                 test: (Item i) => selectedShoes == i,
@@ -108,7 +108,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
             rightIcon: const Icon(Icons.check),
             rightCol: Colors.green,
             widget: SelectionWidget(
-              items: widget.person.items,
+              items: items,
               list: ['Accessories'],
               onTap: addOrRemoveAcc,
               test: (Item i) => selectedAcc.contains(i),
@@ -121,11 +121,9 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
   }
 
   Widget categoryGrid(String cat) {
-    List<Item> tmp = widget.person.items
-        .where((element) => cat == element.category)
-        .toList();
+    var tmp = HiveHelpers.getItemsInCategory(cat);
 
-    if (tmp.length == 0) return SizedBox(height: 16);
+    if (tmp.isEmpty) return SizedBox(height: 16);
     return Expanded(
       child: GridView.builder(
           itemCount: tmp.length,
@@ -136,7 +134,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
             mainAxisSpacing: 10,
           ),
           itemBuilder: (context, index) {
-            Item i = tmp[index];
+            var i = tmp[index];
             if (cat != i.category) return const SizedBox();
             return GridItemWidget(item: i);
           }),
@@ -181,7 +179,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
     }
     // check if limit reached.
     if (selectedLayers.length == MAX_LAYERS) {
-      _key.currentState.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -204,7 +202,7 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
     }
     // check if limit reached.
     if (selectedAcc.length == MAX_ACCESSORIES) {
-      _key.currentState.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -230,9 +228,9 @@ class _AddOutfitScreenState extends State<AddOutfitScreen> {
 
   void saveOutfit() {
     //create outfit and save.
-    Outfit o = new Outfit(
+    var o = Outfit(
         name, selectedAcc, selectedLayers, selectedLegwear, selectedShoes);
-    widget.person.addOutfit(o);
+    HiveHelpers.addOutfit(o);
     //log event
     widget.analytics.logEvent(name: 'add_outfit_event');
     //go back to outfit page.

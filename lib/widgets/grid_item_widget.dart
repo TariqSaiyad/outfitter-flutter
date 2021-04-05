@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/models/outfit.dart';
+import 'package:Outfitter/pages/add_item_screen.dart';
 import 'package:Outfitter/pages/item_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,13 @@ class GridItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // set the hero animation key here.
-    String tag =
+    var tag =
         "${item.name}-${item.category}-${item.color}${outfit != null ? outfit.name : ""}";
 
-    return isGrid ? buildHero(context, tag) : buildDisplay(tag);
+    return isGrid ? buildHero(context, tag) : buildDisplay(tag, context);
   }
 
-  Widget buildDisplay(String tag) {
+  Widget buildDisplay(String tag, BuildContext context) {
     return Hero(
       tag: tag,
       child: Container(
@@ -43,10 +44,24 @@ class GridItemWidget extends StatelessWidget {
               padding: const EdgeInsets.all(0.0),
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(0)),
-                child: Image.file(
-                  File(item.image),
-                  fit: BoxFit.contain,
-                ),
+                child: File(item.image).existsSync()
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                settings:
+                                    RouteSettings(name: 'image_view_page'),
+                                builder: (context) =>
+                                    ImageView(file: item.image)),
+                          );
+                        },
+                        child: Image.file(
+                          File(item.image),
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    : Container(),
               ),
             ),
           ],
@@ -68,10 +83,12 @@ class GridItemWidget extends StatelessWidget {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                child: Image.file(
-                  File(item.image),
-                  fit: BoxFit.cover,
-                ),
+                child: File(item.image).existsSync()
+                    ? Image.file(
+                        File(item.image),
+                        fit: BoxFit.cover,
+                      )
+                    : Container(),
               ),
             ),
             showName ? _titleWidget() : const SizedBox(),
@@ -89,11 +106,12 @@ class GridItemWidget extends StatelessWidget {
 
                     Navigator.push(
                       context,
-                      MaterialPageRoute(settings: RouteSettings(name: 'item_page'),
+                      MaterialPageRoute(
+                          settings: RouteSettings(name: 'item_page'),
                           builder: (context) {
-                        return ItemDetailScreen(
-                            item: item, removeItemFn: removeItemFn);
-                      }),
+                            return ItemDetailScreen(
+                                item: item, removeItemFn: removeItemFn);
+                          }),
                     );
                   },
                 ),

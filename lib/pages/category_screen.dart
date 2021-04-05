@@ -1,15 +1,15 @@
+import 'package:Outfitter/constants/styles.dart';
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:Outfitter/widgets/item_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatefulWidget {
-  CategoryScreen({this.type, this.person});
+  CategoryScreen({this.type});
 
   final dynamic type;
-  final Person person;
 
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
@@ -28,20 +28,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   /// Filter the items for this category.
   void _getItems() {
-    setState(() {
-      items = widget.person.items
-          .where((element) =>
-              element.category.toLowerCase() ==
-              widget.type['name'].toString().toLowerCase())
-          .toList();
-    });
+    var cat = widget.type['name'].toString();
+    setState(() => items = HiveHelpers.getItemsInCategory(cat));
   }
 
   /// Remove the item and display a snackbar.
   /// When the item is removed, update the item list.
   void _removeItem(Item i) {
-    widget.person.removeItem(i);
-    globalKey.currentState.showSnackBar(SnackBar(
+    HiveHelpers.removeItem(i);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Text('${i.name} has been removed')));
@@ -57,22 +52,30 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Column(
             children: [
               const SizedBox(height: 8),
-              ItemTile.display(person: widget.person, type: widget.type),
+              ItemTile.display(type: widget.type),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                      itemCount: items.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        Item i = items[index];
-                        return GridItemWidget(
-                            item: i, removeItemFn: _removeItem);
-                      }),
+                  child: items.isNotEmpty
+                      ? GridView.builder(
+                          itemCount: items.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemBuilder: (context, index) {
+                            var i = items[index];
+                            return GridItemWidget(
+                                item: i, removeItemFn: _removeItem);
+                          })
+                      : Center(
+                          child: Text(
+                            "NO ITEMS",
+                            style: Styles.header3,
+                          ),
+                        ),
                 ),
               )
             ],

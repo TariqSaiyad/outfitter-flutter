@@ -107,25 +107,24 @@ class _SelectableContainerState extends State<SelectableContainer> {
     _selected = widget.selected;
   }
 
-  void assingDefaultValues() {
+  void assignDefaultValues() {
     var theme = Theme.of(context);
 
     _selectedBackgroundColor =
-        this.widget.selectedBackgroundColor ?? theme.dialogBackgroundColor;
+        widget.selectedBackgroundColor ?? theme.dialogBackgroundColor;
     _unselectedBackgroundColor =
-        this.widget.unselectedBackgroundColor ?? theme.dialogBackgroundColor;
-    _selectedBorderColor =
-        this.widget.selectedBorderColor ?? theme.primaryColor;
+        widget.unselectedBackgroundColor ?? theme.dialogBackgroundColor;
+    _selectedBorderColor = widget.selectedBorderColor ?? theme.primaryColor;
 
     _unselectedBorderColor =
-        this.widget.unselectedBorderColor ?? theme.primaryColorDark;
+        widget.unselectedBorderColor ?? theme.primaryColorDark;
 
-    _icon = this.widget.icon ?? Icons.check;
+    _icon = widget.icon ?? Icons.check;
   }
 
   @override
   Widget build(BuildContext context) {
-    assingDefaultValues();
+    assignDefaultValues();
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -143,9 +142,6 @@ class _SelectableContainerState extends State<SelectableContainer> {
             alignment: widget.iconAlignment,
             children: <Widget>[
               AnimatedContainer(
-//                      margin: EdgeInsets.all(widget.iconSize / 2),
-//                      padding: EdgeInsets.all(widget.padding),
-                child: widget.child,
                 decoration: BoxDecoration(
                     border: Border.all(
                         color: widget.selected
@@ -158,6 +154,9 @@ class _SelectableContainerState extends State<SelectableContainer> {
                         ? _selectedBackgroundColor
                         : _unselectedBackgroundColor),
                 duration: const Duration(milliseconds: 200),
+//                      margin: EdgeInsets.all(widget.iconSize / 2),
+//                      padding: EdgeInsets.all(widget.padding),
+                child: widget.child,
               ),
               Container(
                 padding: const EdgeInsets.all(8),
@@ -174,7 +173,9 @@ class _SelectableContainerState extends State<SelectableContainer> {
                     child: Icon(
                       _icon,
                       size: widget.iconSize.toDouble(),
-                      color: _selectedBorderColor==Colors.white?Colors.black:widget.iconColor,
+                      color: _selectedBorderColor == Colors.white
+                          ? Colors.black
+                          : widget.iconColor,
                     ),
                   ),
                 ),

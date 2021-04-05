@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/person.dart';
 import 'package:flutter/material.dart';
 
 class Helper {
@@ -34,19 +33,6 @@ class Helper {
       print("FILE NOT DELETED");
       return false;
     }
-  }
-
-  /// Gets the number of items saved in a particular category.
-  @deprecated
-  static String itemCount(dynamic type, Person p) {
-    if (p == null) return "!";
-    return p.items
-        .where((element) =>
-            element.category.toLowerCase() ==
-            type['name'].toString().toLowerCase())
-        .toList()
-        .length
-        .toString();
   }
 
   static Color getComplement(Color primary) {

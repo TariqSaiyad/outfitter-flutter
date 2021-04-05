@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
 import 'package:Outfitter/models/item.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
@@ -23,7 +24,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   void initState() {
     super.initState();
     item = widget.item;
-    _scrollController = new ScrollController()
+    _scrollController = ScrollController()
       ..addListener(() {
         setState(() {
           offset = _scrollController.offset /
@@ -88,7 +89,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
-  /// This removes the item from the Person object.
+  /// This removes the item from the item box.
   /// It takes the user back to the previous screen.
   void _removeItem() {
     widget.removeItemFn(item);
@@ -106,7 +107,7 @@ class ItemDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bgCol = Theme.of(context).textTheme.headline6.color.withOpacity(0.1);
+    var bgCol = Theme.of(context).textTheme.headline6.color.withOpacity(0.1);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -119,7 +120,7 @@ class ItemDetail extends StatelessWidget {
             title: value != null ? Text(value) : child,
             trailing: Text(
               attribute,
-              style: Theme.of(context).textTheme.caption,
+              style: Styles.subtitle2,
             ),
           ),
         ),
@@ -162,10 +163,7 @@ class SliverItemTitle extends StatelessWidget {
             const Spacer(),
             Text(
               title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  .copyWith(letterSpacing: 1),
+              style: Styles.text18,
             ),
             const Spacer(),
             trailing != null
@@ -173,7 +171,7 @@ class SliverItemTitle extends StatelessWidget {
                     padding: EdgeInsets.only(right: 16 * (1 - offset) + 8),
                     child: trailing,
                   )
-                : SizedBox()
+                : const SizedBox()
           ],
         ),
         Divider(

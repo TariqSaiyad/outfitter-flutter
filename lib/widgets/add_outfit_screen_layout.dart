@@ -1,3 +1,4 @@
+import 'package:Outfitter/constants/styles.dart';
 import 'package:flutter/material.dart';
 
 const int NUM_PAGES = 5;
@@ -47,28 +48,20 @@ class AddOutfitScreenLayout extends StatelessWidget {
               padding: const EdgeInsets.only(top: 32),
               child: Text(
                 title ?? "No Title",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    .copyWith(letterSpacing: 1.5),
+                style: Styles.header3,
                 textAlign: TextAlign.center,
               ),
             ),
             Divider(
               color: Theme.of(context).accentColor,
               thickness: 2,
-//              indent: 4,
-//              endIndent: 4,
             ),
             subtitle != null
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       subtitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          .copyWith(letterSpacing: 1),
+                      style: Styles.subtitle1,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -83,7 +76,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: FloatingActionButton(
                             heroTag: null,
-                            backgroundColor: leftCol ?? null,
+                            backgroundColor: leftCol,
                             splashColor: Theme.of(context).primaryColor,
                             onPressed: leftFn,
                             child: leftIcon ?? const Icon(Icons.chevron_left),
@@ -100,7 +93,7 @@ class AddOutfitScreenLayout extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: FloatingActionButton(
                             heroTag: null,
-                            backgroundColor: rightCol ?? null,
+                            backgroundColor: rightCol,
                             splashColor: Theme.of(context).primaryColor,
                             onPressed: rightFn,
                             child: rightIcon ?? const Icon(Icons.chevron_right),

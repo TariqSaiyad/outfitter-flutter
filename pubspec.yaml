@@ -30,19 +30,18 @@ dependencies:
   cloud_firestore: "^1.0.3"
   firebase_storage: "^8.0.1"
   google_mobile_ads: ^0.12.0
-  localstorage: ^4.0.0+1
-  json_annotation: ^3.0.0
   convex_bottom_bar: ^2.6.0
   camera: ^0.5.8+11
   draggable_bottom_sheet: ^0.1.1
   flutter_staggered_animations: "^0.1.2"
   flutter_swiper: ^1.1.6
-  direct_select_flutter: ^1.0.6
-  preferences: ^5.2.0
-  dynamic_theme: ^1.0.1
   feature_discovery: ^0.13.0
   flutter_material_color_picker: ^1.0.5
   url_launcher: ^6.0.3
+  hive: ^2.0.1
+  hive_flutter: ^1.0.0
+  random_string: ^2.1.0
+  vibration: ^1.7.3
 
 
 
@@ -58,10 +57,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.0.0
-  json_serializable: ^3.5.0
-  flutter_launcher_icons: "^0.8.0"
+  json_serializable: ^4.1.0
+  flutter_launcher_icons: "^0.9.0"
   pedantic: ^1.11.0
+  hive_generator: ^1.0.1
+  build_runner: ^1.12.2
 
 
 flutter_icons:

@@ -1,27 +1,29 @@
 import 'package:Outfitter/constants/constants.dart';
+import 'package:Outfitter/constants/styles.dart';
 import 'package:Outfitter/helpers/helper_methods.dart';
+import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
-import 'package:Outfitter/models/person.dart';
+import 'package:Outfitter/widgets/circular_badge.dart';
 import 'package:Outfitter/widgets/grid_item_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:preferences/preference_service.dart';
+
+import '../config.dart';
 
 const String NONE_CONST = "None";
 
 class SearchScreen extends StatefulWidget {
-  final Person person;
-
-  const SearchScreen({Key key, this.person}) : super(key: key);
+  const SearchScreen({Key key}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Item> items = [];
+  List<Item> allItems = [];
+  List<Item> filtered = [];
   String query = "";
   String category = "";
   String color = "";
@@ -31,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> categoryList = [];
   List<String> typeList = [];
   List<String> codeList = [];
-  Map<String, Color> colorList = new Map();
+  Map<String, Color> colorList = {};
 
   ScrollController _scrollController;
   double offset = 0.0;
@@ -39,14 +41,15 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController = new ScrollController()
+    _scrollController = ScrollController()
       ..addListener(() {
         setState(() {
           offset = _scrollController.offset /
               _scrollController.position.maxScrollExtent;
         });
       });
-    items = widget.person.items;
+    allItems = HiveHelpers.getAllItems();
+    filtered = allItems;
 
     categoryList.addAll([NONE_CONST, ...CATEGORY_LIST]);
     typeList.addAll([NONE_CONST, ...CLOTHING_TYPES]);
@@ -73,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: const EdgeInsets.all(0),
                   centerTitle: true,
-                  title: _buildtitle(),
+                  title: _buildTitle(),
                   background: _itemResults(),
                 ),
               ),
@@ -109,7 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
     ]);
   }
 
-  GestureDetector _buildtitle() {
+  GestureDetector _buildTitle() {
     return GestureDetector(
       onTap: _scrollToTop,
       child: AnimatedOpacity(
@@ -127,23 +130,23 @@ class _SearchScreenState extends State<SearchScreen> {
     return Container(
       child: Column(
         children: [
-          SearchHeader(items: items),
+          SearchHeader(itemCount: filtered.length.toString()),
           Expanded(
               child: AnimatedSwitcher(
             switchOutCurve: Curves.easeIn,
             switchInCurve: Curves.easeIn,
             duration: const Duration(milliseconds: 300),
-            child: items.length > 0
+            child: filtered.isNotEmpty
                 ? GridView.builder(
                     padding: const EdgeInsets.all(8),
-                    itemCount: items.length,
+                    itemCount: filtered.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,
                     ),
                     itemBuilder: (context, index) {
-                      Item i = items[index];
+                      var i = filtered[index];
                       return AnimationConfiguration.staggeredGrid(
                           columnCount: 2,
                           position: index,
@@ -156,10 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 : Center(
                     child: Text(
                       "NO ITEMS",
-                      style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.headline6.fontSize,
-                          letterSpacing: 1.5),
+                      style: Styles.header3,
                     ),
                   ),
           ))
@@ -169,7 +169,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _nameInput() {
-    Color col = Helper.getComplement(Theme.of(context).primaryColor);
+    var col = Helper.getComplement(Theme.of(context).primaryColor);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TextFormField(
@@ -229,7 +229,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void updateColor(int val) {
     setState(() {
-      String temp = colorList.keys.toList()[val];
+      var temp = colorList.keys.toList()[val];
       color = temp == NONE_CONST ? "" : temp;
       filterResults();
     });
@@ -242,7 +242,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     //filter the items by the different categories.
     // the filters are all '&&' together to compound searches.
-    items = widget.person.items
+    filtered = allItems
         .where((element) =>
             element.name.toLowerCase().contains(query.toLowerCase()) &&
             element.category.toLowerCase().contains(category.toLowerCase()) &&
@@ -250,44 +250,25 @@ class _SearchScreenState extends State<SearchScreen> {
             element.dressCode.toLowerCase().contains(code.toLowerCase()) &&
             element.type.toLowerCase().contains(type.toLowerCase()))
         .toList();
-
-//      this.searchItems = this.items.filter((item) => {
-//          return item.payload.doc.data().category.toLowerCase().includes(this.categoryInput.toLowerCase()) &&
-//          item.payload.doc.data().color.toLowerCase().includes(this.colorInput.toLowerCase()) &&
-//          item.payload.doc.data().dressCode.toLowerCase().includes(this.dressCodeInput.toLowerCase()) &&
-//          item.payload.doc.data().clothingType.toLowerCase().includes(this.clothingTypeInput.toLowerCase())
-//    });
   }
 }
 
 class SearchHeader extends StatelessWidget {
   const SearchHeader({
     Key key,
-    @required this.items,
+    @required this.itemCount,
   }) : super(key: key);
 
-  final List<Item> items;
+  final String itemCount;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text(
         "ITEM SEARCH",
-        style: const TextStyle(
-            letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
+        style: Styles.title,
       ),
-      actions: [
-        CircleAvatar(
-          backgroundColor: Theme.of(context).accentColor.withOpacity(0.6),
-          radius: 16,
-          child: Text(items.length.toString(),
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 18)),
-        ),
-        const SizedBox(width: 8)
-      ],
+      actions: [CircularBadge(text: itemCount), const SizedBox(width: 8)],
     );
   }
 }
@@ -307,18 +288,12 @@ class InputSwiper extends StatefulWidget {
 }
 
 class _InputSwiperState extends State<InputSwiper> {
-  final SwiperController _controller = new SwiperController();
-  int initIndex = 0;
-  final Color fCol =
-      Helper.getComplement(Color(PrefService.getInt('primary_col')));
+  final SwiperController _controller = SwiperController();
+  final Color fCol = Helper.getComplement(appTheme.primary);
 
   @override
   void initState() {
     super.initState();
-    // get index of last item.
-    initIndex = widget.itemList != null
-        ? widget.itemList.length - 1
-        : widget.itemMap.length - 1;
   }
 
   @override
@@ -372,8 +347,8 @@ class _InputSwiperState extends State<InputSwiper> {
 
   Widget _buildSwipeItem(int index, {Color fCol}) {
     String c;
-    Color col = Colors.transparent;
-    Color fontCol = fCol;
+    var col = Colors.transparent;
+    var fontCol = fCol;
     if (widget.itemList != null) {
       c = widget.itemList[index];
     } else {

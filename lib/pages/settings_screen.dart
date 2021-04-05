@@ -1,7 +1,7 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:Outfitter/config.dart';
+import 'package:Outfitter/constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:preferences/preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -18,33 +18,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _setColor(String key) {
     Navigator.of(context).pop();
-    PrefService.setInt(key, _tempShadeColor.value);
-    updateTheme();
+    if (key == 'primary_col') {
+      appTheme.setPrimary(_tempShadeColor);
+    } else {
+      appTheme.setAccent(_tempShadeColor);
+    }
   }
 
   void _launchURL() async {
-    final Uri params = Uri(
+    final params = Uri(
       scheme: 'mailto',
       path: 'tariqsaiyad98@gmail.com',
     );
-    String url = params.toString();
+    var url = params.toString();
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       print('Could not launch $url');
     }
-  }
-
-  void updateTheme() {
-    DynamicTheme.of(context).setThemeData(
-      ThemeData(
-        brightness: PrefService.getBool("app_theme_bool")
-            ? Brightness.dark
-            : Brightness.light,
-        primaryColor: Color(PrefService.getInt("primary_col")),
-        accentColor: Color(PrefService.getInt("accent_col")),
-      ),
-    );
   }
 
   @override
@@ -53,8 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text(
           "SETTINGS",
-          style: TextStyle(
-              letterSpacing: 2, fontWeight: FontWeight.w400, fontSize: 20),
+          style: Styles.title,
         ),
       ),
       body: Padding(
@@ -62,25 +52,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           children: [
             Flexible(
-                child: PreferencePage([
-              PreferenceTitle('Customisation'),
-              _colorTile(context, 'primary_col'),
-              _colorTile(context, 'accent_col'),
-              SwitchPreference(
-                'Dark Mode',
-                'app_theme_bool',
-                defaultVal: PrefService.getBool('app_theme_bool'),
-                onChange: () => updateTheme(),
-                switchActiveColor: Color(PrefService.getInt('primary_col')),
-              ),
-              MaterialButton(
+                child: ListView(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 10, top: 20.0),
+                  child: Text('Customisation',
+                      style: TextStyle(
+                          color: appTheme.accent, fontWeight: FontWeight.bold)),
+                ),
+                _colorTile(context, 'primary_col'),
+                _colorTile(context, 'accent_col'),
+                SwitchListTile(
+                  title: Text('Dark Mode'),
+                  value: appTheme.isDark,
+                  activeColor: appTheme.primary,
+                  onChanged: (bool b) {
+                    appTheme.setDarkMode(b);
+                    setState(() {});
+                  },
+                ),
+                MaterialButton(
                   padding: const EdgeInsets.all(8),
+                  onPressed: _showAboutDialog,
                   child: const Text(
                     "ABOUT APP",
-                    style: const TextStyle(letterSpacing: 1.5),
+                    style: Styles.spaced2,
                   ),
-                  onPressed: _showAboutDialog)
-            ]))
+                )
+              ],
+            ))
           ],
         ),
       ),
@@ -101,9 +101,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             thickness: 1,
           ),
           Text(
-            'Flick me an email if you have any feedback or questions :)',
+            'Flick me an email if you have any feedback or questions',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Styles.subtitle2,
           ),
           const SizedBox(height: 16),
           GestureDetector(
@@ -114,12 +114,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const Text(
                     'tariqsaiyad98@gmail.com',
                     textAlign: TextAlign.center,
-                    style: TextStyle(decoration: TextDecoration.underline),
+                    style:
+                        const TextStyle(decoration: TextDecoration.underline),
                   ),
-                  const Icon(
-                    Icons.launch,
-                    size: 18,
-                  )
+                  const Icon(Icons.launch, size: 18)
                 ],
               )),
         ],
@@ -130,53 +128,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   ListTile _colorTile(BuildContext context, String key) {
-    String title = key == "primary_col" ? "Primary Colour" : "Accent Colour";
+    var title = key == "primary_col" ? "Primary Colour" : "Accent Colour";
+    var col = key == 'primary_col' ? appTheme.primary : appTheme.accent;
     return ListTile(
-      trailing: PrefService.getInt(key) != null
-          ? CircleColor(
-              color: Color(PrefService.getInt(key)),
-              circleSize: 30,
-            )
+      trailing: col != null
+          ? CircleColor(color: col, circleSize: 30)
           : const SizedBox(),
       title: Text(title),
       onTap: () {
         _openDialog(
-            context,
-            title,
-            MaterialColorPicker(
-              colors: fullMaterialColors,
-              selectedColor: Color(PrefService.getInt(key)),
-              onColorChange: (color) => setState(() => _tempShadeColor = color),
-              onMainColorChange: (color) =>
-                  setState(() => _tempShadeColor = color),
-            ),
-            key);
+          context,
+          title,
+          key,
+          MaterialColorPicker(
+            colors: fullMaterialColors,
+            selectedColor: col,
+            onColorChange: (color) => setState(() => _tempShadeColor = color),
+            onMainColorChange: (color) =>
+                setState(() => _tempShadeColor = color),
+          ),
+        );
         setState(() {});
       },
     );
   }
 
   void _openDialog(
-      BuildContext context, String title, Widget content, String key) {
+    BuildContext context,
+    String title,
+    String key,
+    Widget content,
+  ) {
     showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.all(6.0),
-          title: Text(title),
-          content: content,
-          actions: [
-            FlatButton(
-              child: const Text('CANCEL'),
-              onPressed: Navigator.of(context).pop,
-            ),
-            FlatButton(
-              child: const Text('SUBMIT'),
-              onPressed: () => _setColor(key),
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+              contentPadding: const EdgeInsets.all(6.0),
+              title: Text(title),
+              content: content,
+              actions: [
+                TextButton(
+                  onPressed: Navigator.of(context).pop,
+                  child: const Text('CANCEL'),
+                ),
+                TextButton(
+                  onPressed: () => _setColor(key),
+                  child: const Text('SELECT'),
+                ),
+              ]);
+        });
   }
 }
