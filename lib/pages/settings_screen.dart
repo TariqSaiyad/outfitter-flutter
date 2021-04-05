@@ -23,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       appTheme.setAccent(_tempShadeColor);
     }
+    setState(() {});
   }
 
   void _launchURL() async {
