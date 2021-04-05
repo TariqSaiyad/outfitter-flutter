@@ -34,10 +34,10 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
   @override
   void initState() {
     super.initState();
-    _dropdownCategoryItems = _buildCategoryList();
-    _dropdownColorItems = _buildColorList();
-    _dropdownCodeItems = _buildCodeList();
-    _dropdownTypeItems = _buildTypeList();
+    _dropdownCategoryItems = _buildList(CATEGORY_LIST);
+    _dropdownColorItems = _buildList(COLORS_LIST.keys.toList(), isCol: true);
+    _dropdownCodeItems = _buildList(DRESS_CODES);
+    _dropdownTypeItems = _buildList(CLOTHING_TYPES);
     category = _dropdownCategoryItems[0].value;
     color = _dropdownColorItems[0].value;
     code = _dropdownCodeItems[0].value;
@@ -66,6 +66,12 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
     }
   }
 
+  bool _validate() {
+    return _formKey != null &&
+        _formKey.currentState != null &&
+        _formKey.currentState.validate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -73,11 +79,6 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-//            Text(name),
-//            Text(category),
-//            Text(color),
-//            Text(code),
-//            Text(type),
             _itemNameField(),
             _itemCategoryField(),
             _itemColorField(),
@@ -91,19 +92,13 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
                 elevation: 4,
                 color: Theme.of(context).primaryColor,
                 splashColor: Theme.of(context).accentColor,
-                onPressed: (_formKey != null &&
-                        _formKey.currentState != null &&
-                        _formKey.currentState.validate())
-                    ? () => validateAndSubmit(context)
-                    : null,
+                onPressed:
+                    _validate() ? () => validateAndSubmit(context) : null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Add Item"),
-                    const SizedBox(
-                      width: 10,
-                      height: 40,
-                    ),
+                    const SizedBox(width: 10, height: 40),
                     const Icon(Icons.check)
                   ],
                 ),
@@ -141,138 +136,87 @@ class _AddItemFormWidgetState extends State<AddItemFormWidget> {
 
   Widget _itemCategoryField() {
     return DropDownWidget(
-        child: DropdownButtonFormField(
-            dropdownColor: Theme.of(context).primaryColor,
-            decoration: InputDecoration(
-                enabledBorder: InputBorder.none, labelText: 'Category'),
-            items: _dropdownCategoryItems,
-            value: category,
-            onSaved: (value) => category = value,
-            onChanged: (val) {
-              setState(() {
-                category = val;
-              });
-            }));
+      title: 'Category',
+      list: _dropdownCategoryItems,
+      onChanged: (val) => setState(() => category = val),
+      value: category,
+      col: Theme.of(context).primaryColor,
+    );
   }
 
   Widget _itemColorField() {
     return DropDownWidget(
-        child: DropdownButtonFormField(
-            decoration: InputDecoration(
-                enabledBorder: InputBorder.none, labelText: 'Colour'),
-            items: _dropdownColorItems,
-            value: color,
-            onSaved: (value) => color = value,
-            onChanged: (val) {
-              setState(() {
-                color = val;
-              });
-            }));
+      title: 'Colour',
+      list: _dropdownColorItems,
+      onChanged: (val) => setState(() => color = val),
+      value: color,
+    );
   }
 
   Widget _itemCodeField() {
     return DropDownWidget(
-        child: DropdownButtonFormField(
-            dropdownColor: Theme.of(context).primaryColor,
-            decoration: InputDecoration(
-                enabledBorder: InputBorder.none, labelText: 'Dress Code'),
-            items: _dropdownCodeItems,
-            value: code,
-            onSaved: (value) => code = value,
-            onChanged: (val) {
-              setState(() {
-                code = val;
-              });
-            }));
+      title: 'Dress Code',
+      list: _dropdownCodeItems,
+      onChanged: (val) => setState(() => code = val),
+      value: code,
+      col: Theme.of(context).primaryColor,
+    );
   }
 
   Widget _itemTypeField() {
     return DropDownWidget(
-        child: DropdownButtonFormField(
-            dropdownColor: Theme.of(context).primaryColor,
-            decoration: InputDecoration(
-                enabledBorder: InputBorder.none, labelText: 'Clothing Type'),
-            items: _dropdownTypeItems,
-            value: type,
-            onSaved: (value) => type = value,
-            onChanged: (val) => setState(() {
-                  type = val;
-                })));
+      title: 'Clothing Type',
+      list: _dropdownTypeItems,
+      onChanged: (val) => setState(() => type = val),
+      value: type,
+      col: Theme.of(context).primaryColor,
+    );
   }
 
-  List<DropdownMenuItem<String>> _buildCategoryList() {
+  List<DropdownMenuItem<String>> _buildList(List input, {bool isCol = false}) {
     var items = <DropdownMenuItem<String>>[];
-    for (var i in CATEGORY_LIST) {
+    for (var i in input) {
       items.add(
-        DropdownMenuItem(
-          value: i,
-          child: Text(i),
-        ),
-      );
+          DropdownMenuItem(value: i, child: isCol ? _colorItem(i) : Text(i)));
     }
     return items;
   }
 
-  List<DropdownMenuItem<String>> _buildCodeList() {
-    var items = <DropdownMenuItem<String>>[];
-    for (String i in DRESS_CODES) {
-      items.add(
-        DropdownMenuItem(
-          value: i,
-          child: Text(i),
-        ),
-      );
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<String>> _buildTypeList() {
-    var items = <DropdownMenuItem<String>>[];
-    for (String i in CLOTHING_TYPES) {
-      items.add(
-        DropdownMenuItem(
-          value: i,
-          child: Text(i),
-        ),
-      );
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<String>> _buildColorList() {
-    var items = <DropdownMenuItem<String>>[];
-    for (var i in COLORS_LIST.keys) {
-      items.add(
-        DropdownMenuItem(
-          value: i,
-          child: Row(
-            children: [
-              CircleAvatar(maxRadius: 15, backgroundColor: COLORS_LIST[i]),
-              const SizedBox(width: 10),
-              Text(Helper.capitalise(i))
-            ],
-          ),
-        ),
-      );
-    }
-    return items;
+  Widget _colorItem(i) {
+    return Row(
+      children: [
+        CircleAvatar(maxRadius: 15, backgroundColor: COLORS_LIST[i]),
+        const SizedBox(width: 10),
+        Text(Helper.capitalise(i))
+      ],
+    );
   }
 }
 
 class DropDownWidget extends StatelessWidget {
   final EdgeInsetsGeometry _fieldPadding =
       EdgeInsets.symmetric(horizontal: 16.0, vertical: 8);
-  final Widget child;
+  final String title, value;
+  final List list;
+  final Function onChanged;
+  final Color col;
 
-  DropDownWidget({Key key, this.child}) : super(key: key);
+  DropDownWidget(
+      {Key key, this.title, this.value, this.list, this.onChanged, this.col})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: _fieldPadding,
         child: OutlinedButton(
-          onPressed: () {},
-          child: child,
-        ));
+            onPressed: () {},
+            child: DropdownButtonFormField(
+                dropdownColor: col,
+                decoration: InputDecoration(
+                    enabledBorder: InputBorder.none, labelText: title),
+                items: list,
+                value: value,
+                onChanged: (val) => onChanged(val))));
   }
 }

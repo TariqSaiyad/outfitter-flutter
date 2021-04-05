@@ -42,10 +42,6 @@ class HiveHelpers {
   static List<Item> getAllItems() {
     var items = Hive.box<Item>(HiveBoxes.items).values.toList();
     print('Total items: ${items.length}\n\n');
-    // items.map((e) => print(e.toJson()));
-    for (var o in items) {
-      print(o.toJson());
-    }
     return items;
   }
 
