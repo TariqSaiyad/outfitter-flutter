@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:preferences/preference_service.dart';
 
 import '../constants/constants.dart';
 import 'add_item_screen.dart';
@@ -32,7 +31,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int currentPage = 1;
   PageController controller;
-  Brightness brightness;
 
   /// True if the outfit page displaying the alt. view.
   bool isAltOutfitView = false;
@@ -85,8 +83,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     controller = PageController(initialPage: currentPage);
     controller.addListener(
         () => setState(() => currentPage = controller.page.floor()));
-    brightness = ThemeData.estimateBrightnessForColor(
-        Color(PrefService.getInt('primary_col')));
 
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
       FeatureDiscovery.discoverFeatures(context, FEATURES);
@@ -139,11 +135,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             IconButton(
                 tooltip: "Search Items",
                 icon: const Icon(Icons.search),
-                onPressed: () => _goToSearch(context)),
+                onPressed: () =>
+                    _goToScreen(context, 'search_page', SearchScreen())),
             IconButton(
                 tooltip: "Settings Page",
                 icon: const Icon(Icons.settings),
-                onPressed: () => _goToSettings(context)),
+                onPressed: () => _goToScreen(context, 'settings_page',
+                    SettingsScreen(setScreen: setScreen))),
 //            IconButton(
 //                tooltip: "Settings Page",
 //                icon: const Icon(Icons.category),
@@ -175,12 +173,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ));
   }
 
-  void _toggleAltView() {
-    setState(() {
-      isAltOutfitView = !isAltOutfitView;
-    });
-  }
-
   FloatingActionButton _getFAB(BuildContext context) {
     return currentPage == 2
         ? FloatingActionButton.extended(
@@ -188,11 +180,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             autofocus: true,
             highlightElevation: 0,
             splashColor: Theme.of(context).primaryColor,
-            onPressed: () => _goToAddOutfit(context),
+            onPressed: () => _goToScreen(context, 'add_outfit_page',
+                AddOutfitScreen(analytics: widget.analytics)),
             label: Text("Add Outfit"),
           )
         : null;
   }
+
+  void _toggleAltView() => setState(() => isAltOutfitView = !isAltOutfitView);
 
   void _goToPage(int i) {
     setScreen(SCREEN_MAP[i]);
@@ -200,34 +195,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
   }
 
-  void _goToSettings(BuildContext context) {
-    setScreen("settings_page");
+  void _goToScreen(BuildContext context, String screen, Widget widget) {
+    setScreen(screen);
     Navigator.push(
             context,
             MaterialPageRoute(
-                settings: RouteSettings(name: 'settings_page'),
-                builder: (context) => SettingsScreen(setScreen: setScreen)))
-        .then((value) => setScreen(SCREEN_MAP[currentPage]));
-  }
-
-  void _goToSearch(BuildContext context) {
-    setScreen("search_page");
-    Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'search_page'),
-                builder: (context) => SearchScreen()))
-        .then((value) => setScreen(SCREEN_MAP[currentPage]));
-  }
-
-  void _goToAddOutfit(BuildContext context) {
-    setScreen("add_outfit_page");
-    Navigator.push(
-            context,
-            MaterialPageRoute(
-                settings: RouteSettings(name: 'add_outfit_page'),
-                builder: (context) =>
-                    AddOutfitScreen(analytics: widget.analytics)))
+                settings: RouteSettings(name: screen),
+                builder: (context) => widget))
         .then((value) => setScreen(SCREEN_MAP[currentPage]));
   }
 

@@ -30,16 +30,11 @@ dependencies:
   cloud_firestore: "^1.0.3"
   firebase_storage: "^8.0.1"
   google_mobile_ads: ^0.12.0
-  localstorage: ^4.0.0+1
-  json_annotation: ^4.0.1
   convex_bottom_bar: ^2.6.0
   camera: ^0.5.8+11
   draggable_bottom_sheet: ^0.1.1
   flutter_staggered_animations: "^0.1.2"
   flutter_swiper: ^1.1.6
-  direct_select_flutter: ^1.0.6
-  preferences: ^5.2.0
-  dynamic_theme: ^1.0.1
   feature_discovery: ^0.13.0
   flutter_material_color_picker: ^1.0.5
   url_launcher: ^6.0.3

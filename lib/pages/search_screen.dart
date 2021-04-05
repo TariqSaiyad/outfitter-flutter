@@ -9,7 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:preferences/preference_service.dart';
+
+import '../config.dart';
 
 const String NONE_CONST = "None";
 
@@ -288,17 +289,11 @@ class InputSwiper extends StatefulWidget {
 
 class _InputSwiperState extends State<InputSwiper> {
   final SwiperController _controller = SwiperController();
-  int initIndex = 0;
-  final Color fCol =
-      Helper.getComplement(Color(PrefService.getInt('primary_col')));
+  final Color fCol = Helper.getComplement(appTheme.primary);
 
   @override
   void initState() {
     super.initState();
-    // get index of last item.
-    initIndex = widget.itemList != null
-        ? widget.itemList.length - 1
-        : widget.itemMap.length - 1;
   }
 
   @override
@@ -315,7 +310,7 @@ class _InputSwiperState extends State<InputSwiper> {
                 child: Text(
                   widget.title,
                   style:
-                  Theme.of(context).textTheme.caption.copyWith(color: fCol),
+                      Theme.of(context).textTheme.caption.copyWith(color: fCol),
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -24,19 +24,9 @@ class HiveHelpers {
 
   static Future<void> deleteAll() async {
     print("DELETING ALL BOXES....");
-    // Hive.box<Item>(HiveBoxes.items).values.map((e) {
-    //   print('Deleting ${e.name}');
-    //   e.delete();
-    // });
-    // Hive.box<Outfit>(HiveBoxes.outfits).values.map((e) {
-    //   print('Deleting ${e.name}');
-    //   e.delete();
-    // });
     await Hive.box<Outfit>(HiveBoxes.outfits).clear();
     await Hive.box<Item>(HiveBoxes.items).clear();
     await Hive.box(HiveBoxes.itemCounts).clear();
-    // await Hive.deleteFromDisk();
-    // await Hive.deleteFromDisk();
   }
 
   /// Get the number of items stored in a particular category.

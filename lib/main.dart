@@ -1,22 +1,18 @@
+import 'package:Outfitter/config.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:camera/camera.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-// Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:preferences/preferences.dart';
 
 import 'pages/home_screen.dart';
 
-//import 'pages/loading_screen.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 
@@ -32,6 +28,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   HiveHelpers.registerAdapters();
   await HiveHelpers.openBoxes();
+  themeBox = await Hive.openBox('themeBox');
 
   // init firebase stuff
   await Firebase.initializeApp();
@@ -40,54 +37,42 @@ Future<void> main() async {
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   _firebaseAnalytics = FirebaseAnalytics();
-  await PrefService.init(prefix: 'pref_');
-  PrefService.setDefaultValues({
-    'primary_col': Colors.deepPurple.value,
-    'accent_col': Colors.pinkAccent.value,
-    'app_theme_bool': true
-  });
   runApp(App());
 }
 
-class App extends StatelessWidget {
-  // Create the initialization Future outside of `build`:
-//  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-//final Future<bool> _initialization = Future.delayed(Duration(milliseconds: 100));
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  @override
+  void initState() {
+    super.initState();
+    appTheme.addListener(() => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DynamicTheme(
-      defaultBrightness: PrefService.getBool('app_theme_bool')
-          ? Brightness.dark
-          : Brightness.light,
-      data: (brightness) => ThemeData(
-        brightness: brightness,
-        primaryColor: Color(PrefService.getInt('primary_col')),
-        accentColor: Color(PrefService.getInt('accent_col')),
+    return FeatureDiscovery(
+      child: MaterialApp(
+        title: 'Outfitter',
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
+        ],
+        theme: appTheme.themeData,
+        themeMode: appTheme.currentTheme,
+        routes: <String, WidgetBuilder>{
+          'home_page': (BuildContext context) {
+            return HomeScreen(
+              cameras: cameras,
+              analytics: _firebaseAnalytics,
+            );
+          }
+        },
+        initialRoute: 'home_page',
       ),
-      themedWidgetBuilder: (context, theme) {
-        return FeatureDiscovery(
-          child: MaterialApp(
-            title: 'Outfitter',
-            debugShowCheckedModeBanner: false,
-            navigatorObservers: [
-              FirebaseAnalyticsObserver(analytics: _firebaseAnalytics),
-            ],
-            theme: theme,
-            themeMode: PrefService.getBool("app_theme_bool")
-                ? ThemeMode.dark
-                : ThemeMode.light,
-            routes: <String, WidgetBuilder>{
-              'home_page': (BuildContext context) {
-                return HomeScreen(
-                  cameras: cameras,
-                  analytics: _firebaseAnalytics,
-                );
-              }
-            },
-            initialRoute: 'home_page',
-          ),
-        );
-      },
     );
   }
 }

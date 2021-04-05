@@ -16,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:preferences/preferences.dart';
 
 import 'test_helper.dart';
 
@@ -34,12 +33,6 @@ void main() {
     HiveHelpers.registerAdapters();
 
     WidgetsFlutterBinding.ensureInitialized();
-    await PrefService.init();
-    PrefService.setDefaultValues({
-      'primary_col': Colors.deepPurple.value,
-      'accent_col': Colors.pinkAccent.value,
-      'app_theme_bool': true
-    });
   });
 
   group("Homepage", () {
