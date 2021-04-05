@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:Outfitter/config.dart';
 import 'package:Outfitter/constants/constants.dart';
 import 'package:Outfitter/helpers/hive_helpers.dart';
 import 'package:Outfitter/models/item.dart';
@@ -39,7 +40,7 @@ void main() {
 
     await Hive.initFlutter();
     HiveHelpers.registerAdapters();
-
+    themeBox = await Hive.openBox('themeBox');
     WidgetsFlutterBinding.ensureInitialized();
   });
 
