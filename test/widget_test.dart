@@ -29,6 +29,14 @@ void main() {
       return null;
     });
 
+    const MethodChannel('vibration')
+        .setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == 'hasVibrator') {
+        return false;
+      }
+      return null;
+    });
+
     await Hive.initFlutter();
     HiveHelpers.registerAdapters();
 
